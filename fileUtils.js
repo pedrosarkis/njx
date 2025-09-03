@@ -8,6 +8,7 @@ function garantirArquivo(caminho, conteudoPadrao = '') {
     }
 }
 
+//oi
 module.exports = {
     garantirArquivo
 };
