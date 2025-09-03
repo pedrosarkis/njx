@@ -1,0 +1,555 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NJX Painel</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to right, #003d1f, #000);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 10px;
+        }
+
+        .btn-voltar {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background-color: rgba(128, 128, 128, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s, transform 0.2s;
+            z-index: 20;
+            -webkit-app-region: no-drag;
+        }
+        body.fade-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        body.fade-out {
+            animation: fadeOut 0.5s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(1.03);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            to {
+                opacity: 0;
+                transform: scale(0.97);
+            }
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        img {
+            -webkit-user-drag: none;
+        }
+
+        * {
+            user-select: none !important;
+            -webkit-user-select: none !important;
+            -moz-user-select: none !important;
+            -ms-user-select: none !important;
+        }
+
+        img, span, .icon-button {
+            pointer-events: auto !important;
+            user-select: none !important;
+            -webkit-user-drag: none !important;
+            -webkit-user-select: none !important;
+        }
+            .btn-voltar:hover {
+                background-color: rgba(255, 255, 255, 0.1);
+                transform: scale(1.1);
+            }
+
+            .btn-voltar img {
+                width: 40px;
+                height: 40px;
+            }
+
+        .logo {
+            margin-top: 20px;
+            width: 100px;
+        }
+
+        .table-container {
+            margin-top: 8px;
+            width: 400px;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            table-layout: fixed;
+            margin-left: -140px;
+        }
+
+        thead tr, tbody tr {
+            display: table;
+            width: 100%;
+            table-layout: fixed;
+        }
+
+        thead {
+            background: transparent;
+        }
+
+        th, td {
+            padding: 4px;
+            text-align: center;
+            font-size: 12px;
+        }
+
+        tbody {
+            display: block;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+            tbody::-webkit-scrollbar {
+                width: 6px;
+            }
+
+            tbody::-webkit-scrollbar-track {
+                background: #111;
+                border-radius: 3px;
+            }
+
+            tbody::-webkit-scrollbar-thumb {
+                background: #7b5cff;
+                border-radius: 3px;
+            }
+
+        .col-id {
+            width: 55px;
+        }
+
+        .col-deposito, .col-saque {
+            width: 90px;
+        }
+
+        .col-eq {
+            width: 20px;
+        }
+
+        .col-lucro {
+            width: 90px;
+        }
+
+        input {
+            width: 100%;
+            box-sizing: border-box;
+            background: black;
+            border: 1px solid #555;
+            color: white;
+            padding: 3px;
+            border-radius: 4px;
+            text-align: center;
+            font-size: 12px;
+        }
+
+        .lucro {
+            width: 100%;
+            box-sizing: border-box;
+            border: 1px solid #7b5cff;
+            color: white;
+            background: transparent;
+            border-radius: 4px;
+            padding: 3px;
+            text-align: center;
+            font-size: 12px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+
+        .historico {
+            margin-top: 10px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        canvas {
+            width: 620px !important;
+            height: 180px !important;
+        }
+
+        .lucro-box {
+            display: flex;
+            gap: 10px;
+            margin-top: 5px;
+        }
+
+        .lucro-dia, .lucro-mes {
+            border: 1px solid;
+            padding: 4px;
+            border-radius: 6px;
+            text-align: center;
+            font-size: 12px;
+            width: 110px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .lucro-dia {
+            border-color: #7b5cff;
+        }
+
+        .lucro-mes {
+            border-color: #00ff99;
+        }
+
+            .lucro-dia strong, .lucro-mes strong {
+                font-size: 18px;
+            }
+        .lucros-container {
+            position: absolute;         
+            top: 120px;
+            right: 150px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .start-btn {
+            background: linear-gradient(to bottom, #9d80ff, #5a38ff);
+            color: white;
+            border: none;
+            padding: 6px 18px;
+            border-radius: 8px;
+            font-size: 11px;
+            cursor: pointer;
+            margin-top: 6px;
+            font-weight: bold;
+            width: 125px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
+        }
+        .historico-container {
+            display: flex;
+            align-items: center; 
+            gap: 20px;
+        }
+        .side-panel {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+    </style>
+</head>
+<body>
+    <button class="btn-voltar" id="voltarBtn">
+        <img src="voltar.png" alt="Voltar">
+    </button>
+    <img src="njxlogo.png" alt="NJX Logo" class="logo">
+
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th class="col-id">#</th>
+                    <th class="col-deposito">DEPOSITO</th>
+                    <th class="col-saque">SAQUE</th>
+                    <th class="col-eq"></th>
+                    <th class="col-lucro">LUCRO</th>
+                </tr>
+            </thead>
+            <tbody id="table-body"></tbody>
+        </table>
+    </div>
+
+    <div class="lucros-container">
+        <div class="lucro-dia">LUCRO DO DIA<br><strong>R$0,00</strong></div>
+        <div class="lucro-mes">LUCRO DO MÊS<br><strong>R$0,00</strong></div>
+        <div id="painelBtn" class="start-btn">INICIAR PAINEL</div>
+        <button class="start-btn" style="background:linear-gradient(to bottom, #ff4d4d, #cc0000);" onclick="resetMes()">RESETAR MÊS</button>
+    </div>
+
+    <div class="historico-container">
+        <div>
+            <div class="historico">HISTÓRICO DO MÊS</div>
+            <canvas id="chart"></canvas>
+        </div>
+        <div class="side-panel">
+            
+        </div>
+    </div>
+
+    <script>
+        const voltarBtn = document.getElementById("voltarBtn");
+        voltarBtn.addEventListener("click", () => {
+            window.location.href = "launcher.html";
+        });
+
+
+        const btn = document.getElementById("painelBtn");
+        let aberto = false;
+
+        btn.addEventListener("click", () => {
+            if (!aberto) {
+                window.electronAPI.send("abrir-painel");
+                btn.textContent = "FECHAR PAINEL";
+                aberto = true;
+            } else {
+                window.electronAPI.send("fechar-painel");
+                btn.textContent = "INICIAR PAINEL";
+                aberto = false;
+            }
+        });
+
+        function formatCurrency(value) {
+            return `R$${value.toFixed(2).replace('.', ',')}`;
+        }
+        function formatInputCurrency(input) {
+            let value = input.value.replace(/\D/g, '');
+            value = (value / 100).toFixed(2) + '';
+            value = value.replace('.', ',');
+            input.value = 'R$' + value;
+        }
+        function attachCurrencyMask(input) {
+            input.addEventListener('input', () => {
+                formatInputCurrency(input);
+                calculateProfit(input.closest('tr'));
+            });
+        }
+        function parseCurrency(str) {
+            return parseFloat(str.replace('R$', '').replace('.', '').replace(',', '.')) || 0;
+        }
+
+        const ctx = document.getElementById('chart').getContext('2d');
+        let chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: Array.from({ length: 30 }, (_, i) => i + 1),
+                datasets: [{
+                    label: 'Histórico',
+                    data: Array(30).fill(0),
+                    borderColor: '#00ff66',
+                    backgroundColor: 'transparent',
+                    borderWidth: 2,
+                    pointRadius: 3,
+                    pointBackgroundColor: '#00ff66',
+                    tension: 0.3
+                }]
+            },
+            options: {
+                responsive: false,
+                maintainAspectRatio: true,
+                devicePixelRatio: window.devicePixelRatio || 2,
+                scales: {
+                    x: {
+                        ticks: {
+                            color: 'white',
+                            font: { size: 10 },
+                            autoSkip: false,
+                            stepSize: 1
+                        },
+                        grid: { color: '#444' }
+                    },
+                    y: {
+                        ticks: {
+                            color: 'white',
+                            font: { size: 10 }
+                        },
+                        grid: { color: '#444' }
+                    }
+                },
+                plugins: { legend: { display: false } }
+            }
+        });
+
+        function salvarDados() {
+            const dados = {
+                linhas: [...document.querySelectorAll('#table-body tr')].map(tr => ({
+                    deposito: tr.querySelector('.deposito')?.value || "R$0,00",
+                    saque: tr.querySelector('.saque')?.value || "R$0,00"
+                })),
+                lucroDia: parseCurrency(document.querySelector('.lucro-dia strong').innerText),
+                lucroMes: parseCurrency(document.querySelector('.lucro-mes strong').innerText),
+                grafico: chart.data.datasets[0].data,
+                ultimaData: new Date().toISOString().split('T')[0]
+            };
+            localStorage.setItem('painelDados', JSON.stringify(dados));
+        }
+
+        function carregarDados() {
+            const salvo = JSON.parse(localStorage.getItem('painelDados') || '{}');
+            const hoje = new Date().toISOString().split('T')[0];
+
+            if (salvo.ultimaData) {
+                if (salvo.ultimaData !== hoje) {
+                    let novoGrafico = salvo.grafico || Array(30).fill(0);
+                    let diaIndexAnterior = new Date(salvo.ultimaData).getDate() - 1;
+                    novoGrafico[diaIndexAnterior] = salvo.lucroDia;
+                    salvo.lucroMes = (salvo.lucroMes || 0) + salvo.lucroDia;
+                    salvo.lucroDia = 0;
+                    salvo.linhas = salvo.linhas?.map(() => ({ deposito: "R$0,00", saque: "R$0,00" })) || [];
+                    salvo.ultimaData = hoje;
+                    let diaIndexHoje = new Date().getDate() - 1;
+                    novoGrafico[diaIndexHoje] = salvo.lucroDia;
+                    salvo.grafico = novoGrafico;
+                }
+
+                document.querySelectorAll('#table-body tr').forEach((tr, i) => {
+                    if (salvo.linhas && salvo.linhas[i]) {
+                        tr.querySelector('.deposito').value = salvo.linhas[i].deposito;
+                        tr.querySelector('.saque').value = salvo.linhas[i].saque;
+                        calculateProfit(tr, false);
+                    }
+                });
+
+                document.querySelector('.lucro-dia strong').innerText = formatCurrency(salvo.lucroDia || 0);
+                document.querySelector('.lucro-mes strong').innerText = formatCurrency(salvo.lucroMes || 0);
+                if (salvo.grafico) {
+                    chart.data.datasets[0].data = salvo.grafico;
+                    chart.update();
+                }
+                localStorage.setItem('painelDados', JSON.stringify(salvo));
+            } else {
+                salvarDados();
+            }
+        }
+
+        function calculateProfit(row, save = true) {
+            const deposito = parseCurrency(row.querySelector('.deposito').value);
+            const saque = parseCurrency(row.querySelector('.saque').value);
+            const lucro = saque - deposito;
+            row.querySelector('.lucro').innerText = formatCurrency(lucro);
+            updateTotals(save);
+        }
+
+        function updateTotals(save = true) {
+            let totalDia = 0;
+            document.querySelectorAll('.lucro').forEach(el => {
+                totalDia += parseCurrency(el.innerText);
+            });
+
+            let dados = JSON.parse(localStorage.getItem('painelDados') || '{}');
+            let lucroMes = dados.lucroMes || 0;
+
+            document.querySelector('.lucro-dia strong').innerText = formatCurrency(totalDia);
+            document.querySelector('.lucro-mes strong').innerText = formatCurrency(lucroMes);
+
+            if (save) salvarDados();
+        }
+        function updateChart(lucroDia) {
+            const diaIndex = new Date().getDate() - 1; // índice do dia no mês (0 a 29)
+            chart.data.datasets[0].data[diaIndex] = lucroDia;
+            chart.update();
+        }
+        function resetMes() {
+            chart.data.datasets[0].data = Array(30).fill(0);
+            document.querySelector('.lucro-mes strong').innerText = formatCurrency(0);
+            salvarDados();
+            chart.update();
+        }
+        function createRow(index) {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                        <td class="col-id">${index}</td>
+                        <td class="col-deposito"><input class="deposito" value="${formatCurrency(0)}"></td>
+                        <td class="col-saque"><input class="saque" value="${formatCurrency(0)}"></td>
+                        <td class="col-eq">=</td>
+                        <td class="col-lucro"><div class="lucro">${formatCurrency(0)}</div></td>
+                    `;
+            tr.querySelector('.deposito').addEventListener('input', () => calculateProfit(tr));
+            tr.querySelector('.saque').addEventListener('input', () => calculateProfit(tr));
+            attachCurrencyMask(tr.querySelector('.deposito'));
+            attachCurrencyMask(tr.querySelector('.saque'));
+            return tr;
+        }
+
+        function resetPainel() {
+            document.querySelectorAll('.deposito, .saque').forEach(input => input.value = formatCurrency(0));
+            document.querySelectorAll('.lucro').forEach(div => div.innerText = formatCurrency(0));
+            updateTotals();
+        }
+
+        const tbody = document.getElementById('table-body');
+        for (let i = 1; i <= 100; i++) {
+            tbody.appendChild(createRow(i));
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            carregarDados();
+        });
+
+        let intervalStatusCheck = null;
+
+        async function verificarStatusUsuario() {
+            const token = localStorage.getItem('token');
+            if (!token) return; // se não estiver logado
+
+            try {
+                const resposta = await fetch('https://genio-production.up.railway.app/user/status', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (!resposta.ok) {
+                    console.warn('Falha ao verificar status do usuário:', await resposta.text());
+                    return;
+                }
+
+                const dados = await resposta.json();
+                if (!dados.ativo) {
+                    document.getElementById('desativadoBox').style.display = 'flex';
+                    setTimeout(() => {
+                        localStorage.removeItem('token');
+                        window.electronAPI?.send('login-red');
+                        console.log('sucesso')
+                    }, 3000);
+                }
+            } catch (erro) {
+                console.error('Erro ao verificar status:', erro);
+            }
+        }
+        window.addEventListener('DOMContentLoaded', () => {
+            intervalStatusCheck = setInterval(verificarStatusUsuario, 15000); // a cada 15 segundos
+        });
+    </script>
+</body>
+</html>

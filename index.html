@@ -1,0 +1,2077 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>NJX ANTY</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        html, body {
+            width: 700px;
+            height: 580px;
+            background: linear-gradient(55deg, #2e1857, #000000);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .container {
+            width: 640px;
+            height: 100%;
+            margin-top: 130px;
+            padding: 15px 20px 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: start;
+            align-items: center;
+            gap: 8px;
+            overflow: hidden;
+        }
+
+        .logo {
+            position: absolute;
+            top: 0px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+        }
+
+            .logo img {
+                width: 155px;
+            }
+
+
+        label {
+            font-size: 13px;
+            color: #ccc;
+            align-self: flex-start;
+        }
+
+        input[type="text"],
+        input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            border: none;
+            border-radius: 6px;
+            background-color: #121212;
+            color: white;
+            font-size: 13px;
+            outline: none;
+        }
+
+        .row {
+            display: flex;
+            gap: 10px;
+            width: 100%;
+        }
+
+            .row button {
+                flex: 1;
+                white-space: nowrap;
+            }
+
+        button {
+            background-color: #141414;
+            border: none;
+            color: white;
+            padding: 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 12px;
+            transition: background-color 0.2s;
+        }
+
+            button:hover {
+                background-color: #242424;
+            }
+
+        .green {
+            background-color: #02731e;
+            border: 2px solid #fff;
+        }
+
+        .red {
+            background-color: #595959;
+            border: 2px solid #fff;
+        }
+        
+        .purple {
+            background-color: #370678;
+            border: 2px solid #fff;
+        }
+        #mobileMode.purple {
+            background-color: #370678;
+        }
+        #toggleProxyBtn.green {
+            background-color: #00801c;
+        }
+        #mirrorBtn.green {
+            background-color: #00801c;
+        }
+        #touchTranslateBtn.green {
+            background-color: #00801c;
+        }
+
+        .toggle-monitor {
+            background-color: #1a1a1a;
+            color: #ccc;
+            border: 1px solid #444;
+            padding: 8px 14px;
+            font-size: 12px;
+            font-weight: bold;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            margin-top: 5px;
+        }
+
+            .toggle-monitor:hover {
+                background-color: #222;
+                color: white;
+                border-color: #666;
+            }
+                 
+            #monitorPanel.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        #monitorPanel {
+            position: fixed;
+            bottom: 45px;
+            right: 50px;
+            background: rgba(0, 0, 0, 1);
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 12px;
+            color: #ccc;
+            font-family: 'Segoe UI', sans-serif;
+            font-weight: bold;
+            border: 2px solid #290178;
+            display: flex;
+            gap: 16px;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
+        }
+
+            #monitorPanel span {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                font-weight: bold;
+            }
+
+                #monitorPanel span::before {
+                    content: attr(data-label);
+                    font-size: 10px;
+                    color: #888;
+                    font-weight: normal;
+                }
+
+        #toast {
+            position: fixed;
+            bottom: 45px;
+            left: 20px;
+            padding: 12px 20px;
+            border-radius: 6px;
+            background-color: #2c2c2c;
+            color: white;
+            font-size: 13px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.8s ease; 
+            border-left: 5px solid transparent;
+            z-index: 9999;
+        }
+
+            #toast.show {
+                opacity: 1;
+                pointer-events: auto;
+            }
+
+            #toast.success {
+                border-left-color: #4caf50;
+            }
+
+            #toast.error {
+                border-left-color: #f44336;
+            }
+        .toggle-monitor {
+            background-color: #555;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        .fade-out {
+            animation: fadeOut 0.4s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(1.03);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            to {
+                opacity: 0;
+                transform: scale(0.97);
+            }
+        }
+        .btn-voltar {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background-color: rgba(128, 128, 128, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s, transform 0.2s;
+            z-index: 20;
+            -webkit-app-region: no-drag;
+        }
+
+            .btn-voltar:hover {
+                background-color: rgba(255, 255, 255, 0.1);
+                transform: scale(1.1);
+            }
+
+            .btn-voltar img {
+                width: 40px;
+                height: 40px;
+            }
+        #proxies {
+            background-color: #121212;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 10px;
+            font-family: 'Segoe UI', sans-serif;
+            resize: none;
+        }
+        #desativadoBox {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .mensagem-desativado {
+            background: #222;
+            color: white;
+            border: 2px solid #f00;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            font-family: sans-serif;
+            box-shadow: 0 0 20px red;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .popup-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,.6);
+            backdrop-filter: blur(6px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px; 
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: opacity .3s ease, visibility .3s ease;
+            z-index: 1000;
+        }
+
+            .popup-overlay.show {
+                opacity: 1;
+                visibility: visible;
+                pointer-events: auto;
+            }
+
+            .popup-overlay.show {
+                opacity: 1;
+                visibility: visible;
+            }
+                .popup-overlay.show .popup {
+                    transform: scale(1);
+                    opacity: 1;
+                }
+
+        .popup {
+            width: 560px;
+            max-width: 92vw;
+            background-image: url('shop.png');
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            border-radius: 14px;
+            box-shadow: 0 10px 25px rgba(0,0,0,.6);
+            padding: 18px 22px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 14px;
+            max-height: 72vh;
+            overflow: hidden;
+        }
+        .banner-wrap { 
+            width: 76%;
+            max-width: 560px;
+        }
+
+        .popup .banner {
+            width: 76%;
+            aspect-ratio: 16 / 9; 
+            margin: 0 auto 6px;
+            overflow: hidden;
+            border-radius: 12px;
+        }
+
+        .popup__banner-track {
+            display: flex;
+            height: 100%;
+            transition: transform .5s ease;
+        }
+
+            .popup__banner-track img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                flex-shrink: 0;
+            }
+            .popup select, .popup button {
+                margin-top: 10px;
+                padding: 8px;
+                border-radius: 6px;
+                border: none;
+            }
+
+        .popup input[type="range"]#sliderQuantidade {
+            width: 84%;
+            margin: 2px auto 0;
+            display: block;
+        }
+
+        #quantidadeLabel {
+            margin-top: -2px;
+            font-size: 14px;
+            color: #fff;
+            text-align: center;
+            font-weight: 500;
+        }
+          
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        label[for="proxies"] {
+            color: #ccc;
+        }
+        img {
+            -webkit-user-drag: none;
+        }
+        * {
+            user-select: none !important;
+            -webkit-user-select: none !important;
+            -moz-user-select: none !important;
+            -ms-user-select: none !important;
+        }
+
+        img, span, .icon-button {
+            pointer-events: auto !important;
+            user-select: none !important;
+            -webkit-user-drag: none !important;
+            -webkit-user-select: none !important;
+        }
+        .btn-roxo, .btn-vermelho {
+            min-width: 120px;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 700;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-roxo {
+            background: linear-gradient(135deg,#3c0073,#6d1db8);
+        }
+
+            .btn-roxo:hover {
+                transform: scale(1.05);
+                box-shadow: 0 0 10px rgba(109, 29, 184, 0.8), 0 0 20px rgba(92, 9, 171, 0.6);
+            }
+
+        .btn-vermelho {
+            background: linear-gradient(135deg,#ff4b4b,#c00);
+        }
+
+            .btn-vermelho:hover {
+                transform: scale(1.05);
+                box-shadow: 0 0 10px rgba(255,0,0,0.8), 0 0 20px rgba(255,0,0,0.6);
+            }
+        #quantidadeLabel {
+            text-align: center;
+            display: block;
+            width: 100%;
+        }
+
+        .botoes-pagamento {
+            margin-top: auto;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+        }
+        #popupQr .popup {
+            max-width: 95vw;
+            max-height: 95vh;
+        }
+
+        #qrImageContainer {
+            position: relative;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1;
+        }
+
+        #qrImageContainer img {
+            max-width: 100%;
+            height: auto;
+            object-fit: contain;
+            display: block;
+            margin: 0 auto;
+        }
+        #statusPago {
+            display: none !important;
+        }
+        .qr-confirm {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+            z-index: 999;
+            opacity: 0;
+            transform: scale(0.94);
+            transition: opacity .18s ease, transform .18s ease;
+        }
+            .qr-confirm.show {
+                opacity: 1;
+                transform: scale(1);
+            }
+            .qr-confirm svg {
+                width: 56%;
+                max-width: 240px;
+                height: auto;
+                display: block;
+                filter: drop-shadow(0 10px 30px rgba(34,197,94,0.25));
+            }
+        .qc-circle {
+            transform-origin: center;
+            transition: transform .28s cubic-bezier(.2,.95,.2,1), opacity .18s ease;
+        }
+
+        .qc-check {
+            transition: stroke-dashoffset .45s cubic-bezier(.2,.9,.2,1);
+        }
+        #popupObrigado {
+            background-image: url('thanks.png');
+            background-size: cover;
+            background-position: center;
+            position: fixed !important;
+            inset: 0 !important; 
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            background-repeat: no-repeat !important;
+            background-size: cover !important;
+            background-position: center !important;
+            z-index: 9998 !important;
+            pointer-events: auto !important;
+        }
+            #popupObrigado .popup-buttons {
+                position: absolute !important;
+                left: 50% !important;
+                transform: translateX(-50%) !important;
+                bottom: 140px !important; /* << ajuste para descer/levantar os botões */
+                display: flex !important;
+                gap: 18px !important;
+                align-items: center !important;
+                z-index: 9999 !important;
+                pointer-events: auto !important;
+            }
+            #popupObrigado .popup-close {
+                position: absolute !important;
+                left: 50% !important;
+                transform: translateX(-50%) !important;
+                bottom: 92px !important; /* << ajuste para distância entre linha de botões e fechar */
+                z-index: 9999 !important;
+                pointer-events: auto !important;
+            }
+            #popupObrigado button,
+            #popupObrigado .btn-roxo,
+            #popupObrigado .btn-vermelho,
+            #popupObrigado .btn-base {
+                border: none !important;
+                box-shadow: none !important;
+                outline: none !important;
+                -webkit-box-shadow: none !important;
+                -webkit-appearance: none !important;
+                cursor: pointer !important;
+                font-weight: 700 !important;
+            }
+
+            /* roxo (baixa) */
+            #popupObrigado .btn-roxo {
+                background: linear-gradient(90deg,#6c2bdc,#5b19e5) !important;
+                color: #fff !important;
+                padding: 12px 20px !important;
+                border-radius: 10px !important;
+                min-width: 160px !important;
+            }
+
+            /* vermelho (inserir) */
+            #popupObrigado .btn-vermelho {
+                background: linear-gradient(90deg,#ff3b3b,#ff5a4d) !important;
+                color: #fff !important;
+                padding: 12px 20px !important;
+                border-radius: 10px !important;
+                min-width: 160px !important;
+            }
+
+            /* fechar (menor, separado) */
+            #popupObrigado .btn-base {
+                background: rgba(0,0,0,0.65) !important;
+                color: #fff !important;
+                padding: 8px 16px !important;
+                border-radius: 8px !important;
+                min-width: auto !important;
+            }
+
+                /* hover states */
+                #popupObrigado .btn-roxo:hover,
+                #popupObrigado .btn-vermelho:hover,
+                #popupObrigado .btn-base:hover {
+                    filter: brightness(1.06);
+                }
+        .screens-count {
+            width: 30px;
+            height: 30px;
+            border-radius: 10px;
+            background: #0b0b0b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 16px;
+            color: #fff;
+            border: 3px solid rgba(255,255,255,0.03);
+            box-shadow: 0 6px 18px rgba(0,0,0,0.6);
+            padding: 0;
+        }
+
+            .screens-count input[type="number"] {
+                width: 100%;
+                height: 100%;
+                border: 0;
+                background: transparent;
+                color: inherit;
+                font-weight: 800;
+                text-align: center;
+                font-size: 11px;
+                padding: 0;
+                margin: 0;
+                -moz-appearance: textfield;
+                outline: none;
+            }
+                .screens-count input[type="number"]::-webkit-outer-spin-button,
+                .screens-count input[type="number"]::-webkit-inner-spin-button {
+                    -webkit-appearance: none;
+                    margin: 0;
+                }
+        .card {
+            position: relative;
+        }
+
+        #proxyBadge.proxy-badge {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            min-width: 22px; 
+            height: 22px;
+            padding: 0 8px;
+            border-radius: 999px;
+            background: linear-gradient(180deg,#a24cd0,#7b3fa6);
+            color: #fff;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 11px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.45);
+            border: 3px solid rgba(0,0,0,0.18);
+            pointer-events: none;
+            transform-origin: center;
+            transition: transform .12s ease, opacity .12s ease;
+            opacity: 0;
+            transform: scale(.85);
+            z-index: 40;
+        }
+
+            #proxyBadge.proxy-badge.visible {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            #proxyBadge.proxy-badge.hidden {
+                opacity: 0;
+                transform: scale(.85);
+            }
+
+            #proxyBadge.proxy-badge[data-digits="2"] {
+                min-width: 40px;
+                font-size: 12px;
+            }
+
+            #proxyBadge.proxy-badge[data-digits="3"] {
+                min-width: 48px;
+                font-size: 11px;
+            }
+        #proxies {
+            overflow-y: auto; 
+            scrollbar-width: thin; 
+            scrollbar-color: rgba(167,103,194,0.95) rgba(0,0,0,0.16); 
+            transition: box-shadow .18s ease;
+        }
+
+            #proxies::-webkit-scrollbar {
+                width: 10px;
+            }
+
+            #proxies::-webkit-scrollbar-track {
+                background: transparent;
+                margin: 6px 0; 
+                border-radius: 999px;
+            }
+
+            #proxies::-webkit-scrollbar-thumb {
+                background: linear-gradient(180deg, rgba(195,110,235,0.95), rgba(125,61,171,0.95));
+                border-radius: 999px;
+                border: 2px solid rgba(12,8,15,0.6);
+                box-shadow: inset 0 1px 3px rgba(255,255,255,0.03), 0 6px 18px rgba(0,0,0,0.45);
+                min-height: 24px;
+                opacity: 0.9;
+                transition: transform .12s ease, opacity .12s ease;
+            }
+
+                #proxies:hover::-webkit-scrollbar-thumb,
+                #proxies::-webkit-scrollbar-thumb:hover {
+                    transform: scale(1.02);
+                    opacity: 1;
+                }
+
+            #proxies::-webkit-scrollbar-corner {
+                background: transparent;
+            }
+
+            #proxies.is-scrolling::-webkit-scrollbar-thumb {
+                box-shadow: 0 10px 30px rgba(125,61,171,0.16), inset 0 2px 6px rgba(255,255,255,0.02);
+                transform: scale(1.03);
+                opacity: 1;
+            }
+        .btn-base {
+            background-color: #000; 
+            color: #fff; 
+            border: 2px solid #fff; 
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 10px;
+            padding: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.2s, border-color 0.2s;
+        }
+            .btn-base:hover {
+                background-color: #111; 
+                transform: scale(1.02);
+            }
+
+        .green, .purple, .red {
+            border: 2px solid #fff;
+        }
+        #comprarProxyBtn {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: linear-gradient(135deg, #4b1a78, #6a28a0);
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+            white-space: nowrap;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            animation: purplePulse 2s infinite;
+            transition: transform 0.2s ease;
+        }
+
+            #comprarProxyBtn:hover {
+                transform: scale(1.03);
+            }
+
+            #comprarProxyBtn:disabled {
+                opacity: 0.6;
+                cursor: not-allowed;
+                animation: none;
+            }
+
+        @keyframes purplePulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(178, 100, 247, 0.7);
+            }
+
+            70% {
+                box-shadow: 0 0 10px 10px rgba(178, 100, 247, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(178, 100, 247, 0);
+            }
+        }
+        #proxies:focus {
+            outline: none;
+        }
+        #btnSaveTabs,
+        #btnResetTabs,
+        #btnNewTab {
+            padding: 2px 0px; 
+            font-size: 10px;
+        }
+        #btnSaveTabs,
+        #btnResetTabs,
+        #btnNewTab,
+        #saveUrlBtn,
+        #toggleMonitorBtn {
+            background-color: #2d2e2d;
+            border: 2px solid #404040;
+        }
+    </style>
+</head>
+<body class="fade-in">
+    <button class="btn-voltar" id="voltarBtn">
+        <img src="voltar.png" alt="Voltar">
+    </button>
+    <div id="toast"></div>
+    <div class="logo">
+        <img src="njxlogo.png" alt="Logo NJX" />
+    </div>
+    <div class="container" id="mainContainer">
+
+        <div id="proxiesCard" class="card" style="position:relative;">
+            <div id="proxyBadge" class="proxy-badge hidden" aria-hidden="true">0</div>
+        </div>
+        <div class="row" style="align-items: stretch;">
+            <textarea id="proxies" rows="3" style="flex: 1; resize: none;"
+                      placeholder="PROXIES (1 POR LINHA)"></textarea>
+            <button id="comprarProxyBtn" style="
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        background-color: #000;
+        border-radius: 8px;
+        font-weight: bold;
+        font-size: 14px;
+        white-space: nowrap;
+    ">
+                <img src="cart.png" alt="" style="width: 42px; height: 42px;">
+                COMPRAR PROXY
+            </button>
+        </div>
+
+        <div class="row">
+            <button id="mobileMode" class="btn-base purple">MODO MOBILE</button>
+            <button id="mirrorBtn" class="btn-base red">ESPELHAMENTO</button>
+        </div>
+
+        <div class="row">
+            <button id="toggleProxyBtn" class="btn-base red">PROXIES: DESATIVADO</button>
+            <button id="touchTranslateBtn" class="btn-base red">CLIQUE NORMAL</button>
+        </div>
+
+        <label for="tabCount">TELAS</label>
+        <div class="row">
+            <div class="screens-count">
+                <input id="tabCount" type="number" value="1" min="1" />
+            </div>
+            <button id="btnSaveTabs" class="btn-base">SALVAR POSIÇÕES</button>
+            <button id="btnResetTabs" class="btn-base">RESETAR POSIÇÕES</button>
+            <button id="btnNewTab" class="btn-base">ABRIR NOVA TELA</button>
+        </div>
+
+        <div class="row">
+            <input type="text" id="urlInput" value=""
+                   placeholder="Link Ex: https://www.vipnjx.com/" style="flex:3;" />
+            <button id="saveUrlBtn" class="btn-base" style="flex:2;">SALVAR LINK</button>
+        </div>
+
+            <div class="row">
+                <button id="unlockMissionBtn" class="btn-base">DESBLOQUEAR MISSÃO</button>
+                <button id="startBtn" class="btn-base">ABRIR ABAS</button>
+            </div>
+
+            <div class="row">
+                <button id="createAccountsBtn" class="btn-base">CRIAR CONTAS</button>
+                <button id="refreshPagesBtn" class="btn-base">ATUALIZAR PAGINAS</button>
+            </div>
+
+            <div class="row">
+                <button id="toggleViewBtn" class="btn-base">VER CONTAS</button>
+                <button id="closeBtn" class="btn-base">FECHAR ABAS</button>
+            </div>
+
+            <div class="row" style="margin-top: -6px;">
+                <button id="toggleMonitorBtn" class="toggle-monitor">PAINEL DESEMPENHO: DESATIVADO</button>
+            </div>
+        </div>
+        <div id="desativadoBox" style="display: none;">
+            <div class="mensagem-desativado">
+                <h3>⚠️ Conta desativada</h3>
+                <p>Sua conta foi desativada.<br>Você será desconectado.</p>
+            </div>
+        </div>
+        <div id="monitorPanel">
+            <span data-label="CPU:" id="cpuUsage">--%</span>
+            <span data-label="RAM:" id="ramUsage">--%</span>
+            <span data-label="GPU:" id="gpuUsage">--%</span>
+        </div>
+        <div id="popupCompra" class="popup-overlay">
+            <div class="popup">
+                <div style="width: 100%; display: flex; justify-content: center; margin-bottom: 10px;">
+                    <div class="banner">
+                        <div id="bannerSlider" class="popup__banner-track">
+                            <img src="banner1.png" alt="Banner 1">
+                            <img src="banner2.png" alt="Banner 2">
+                            <img src="banner3.png" alt="Banner 3">
+                        </div>
+                    </div>
+                </div>
+
+                <input type="range" id="sliderQuantidade" min="0" max="6" step="1" value="0">
+                <p id="quantidadeLabel">Quantidade: 10</p>
+                <div class="botoes-pagamento">
+                    <button id="gerarQrBtn" class="btn-roxo">PAGAR</button>
+                    <button id="fecharPopupBtn" class="btn-vermelho">CANCELAR</button>
+                </div>
+            </div>
+        </div>
+        <div id="popupQr" class="popup-overlay">
+            <div class="popup" style="width: 360px; padding: 20px; position: relative; overflow: visible;">
+                <div id="qrImageContainer" style="position:relative; display:flex; align-items:center; justify-content:center; width:100%; padding:8px;">
+                    <div id="qrConfirm" class="qr-confirm" aria-hidden="true" style="display:none; pointer-events:none;">
+                        <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                            <circle class="qc-circle" cx="60" cy="60" r="54" fill="#22c55e" opacity="0" transform="scale(0.75)"></circle>
+                            <path class="qc-check" d="M33 63 L52 81 L88 41" fill="none" stroke="#ffffff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                    </div>
+                </div>
+                <div class="botoes-pagamento" style="display: flex; gap: 10px; width: 100%;">
+                    <button id="btnJaPaguei" class="btn-roxo" style="flex: 1;">JÁ PAGUEI</button>
+                    <button id="fecharQrBtn" class="btn-vermelho" style="flex: 1;">FECHAR</button>
+                </div>
+            </div>
+        </div>
+        <div id="popupProxies" class="popup-overlay">
+            <div class="popup" style="width:480px; padding:18px;">
+                <h3 id="proxiesTitle">Proxies prontas</h3>
+                <p id="proxiesInfo" style="color:#ccc; margin-bottom:10px;">Quantidade: <span id="proxiesCount">—</span></p>
+
+                <div style="max-height:260px; overflow:auto; width:100%; margin-bottom:10px;">
+                    <textarea id="proxiesPreview" style="width:100%; height:180px; background:#0f0f12; color:#ddd; border-radius:8px; padding:8px" readonly></textarea>
+                </div>
+
+                <div style="display:flex; gap:10px; width:100%;">
+                    <button id="baixarProxiesBtn" class="btn-roxo" style="flex:1">BAIXAR PROXIES</button>
+                    <button id="inserirProxiesBtn" class="btn-vermelho" style="flex:1">INSERIR NO BOT</button>
+                </div>
+                <div style="display:flex; gap:10px; width:100%; margin-top:8px;">
+                    <button id="fecharProxiesBtn" style="flex:1" class="btn-vermelho">FECHAR</button>
+                    <select id="splitSize" style="width:130px; padding:8px; border-radius:6px;">
+                        <option value="0">Não dividir</option>
+                        <option value="10">Dividir por 10</option>
+                        <option value="50">Dividir por 50</option>
+                        <option value="100">Dividir por 100</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div id="popupObrigado" class="popup-overlay" style="display:none;">
+               
+            <div class="popup-buttons">
+                <button id="btnBaixarProxies" class="btn-roxo" style="padding:10px 12px;">BAIXAR PROXIES</button>
+                <button id="btnInserirProxies" class="btn-vermelho" style="padding:10px 12px;">INSERIR NO BOT</button>
+            </div>
+
+            <div class="popup-close">
+                <button id="btnFecharObrigado" class="btn-base" style="padding:8px 10px;">FECHAR</button>
+            </div>
+            </div>
+   
+        <script>
+            const voltarBtn = document.getElementById("voltarBtn");
+
+            voltarBtn.addEventListener("click", () => {
+                document.body.classList.remove("fade-in");
+                document.body.classList.add("fade-out");
+
+                setTimeout(() => {
+                    window.location.href = "launcher.html";
+                }, 400);
+            });
+            function animateCheck() {
+                const el = document.getElementById('qrConfirm');
+                if (!el) { console.warn('animateCheck: qrConfirm ausente'); return; }
+                const path = el.querySelector('.qc-check');
+                const circle = el.querySelector('.qc-circle');
+
+                if (!path || !circle) {
+                    console.warn('animateCheck: elementos SVG faltando', { path: !!path, circle: !!circle });
+                    return;
+                }
+
+                el.style.display = 'flex';
+                void el.offsetWidth;
+
+                let len = 0;
+                try {
+                    len = path.getTotalLength();
+                } catch (e) {
+                    console.warn('animateCheck: getTotalLength falhou, usando fallback', e);
+                    len = 200;
+                }
+
+                path.style.transition = 'none';
+                path.style.strokeDasharray = len;
+                path.style.strokeDashoffset = len;
+
+                circle.style.opacity = '0';
+                circle.style.transform = 'scale(0.75)';
+
+                path.getBoundingClientRect();
+
+                el.classList.add('show');
+
+                requestAnimationFrame(() => {
+                    circle.style.transition = 'opacity .24s ease, transform .28s cubic-bezier(.2,.95,.2,1)';
+                    circle.style.opacity = '1';
+                    circle.style.transform = 'scale(1)';
+                });
+
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                        path.style.transition = 'stroke-dashoffset .45s cubic-bezier(.2,.9,.2,1)';
+                        path.style.strokeDashoffset = '0';
+                    });
+                });
+            }
+
+            function resetCheckAnimation() {
+                const el = document.getElementById('qrConfirm');
+                if (!el) return;
+                const path = el.querySelector('.qc-check');
+                const circle = el.querySelector('.qc-circle');
+                if (path) {
+                    try {
+                        const len = path.getTotalLength ? path.getTotalLength() : null;
+                        if (len) {
+                            path.style.transition = 'none';
+                            path.style.strokeDasharray = len;
+                            path.style.strokeDashoffset = len;
+                        } else {
+                            path.style.strokeDashoffset = path.style.strokeDasharray || 1;
+                        }
+                    } catch (e) { /* ignore */ }
+                }
+                if (circle) {
+                    circle.style.transition = 'none';
+                    circle.style.opacity = '0';
+                    circle.style.transform = 'scale(0.75)';
+                }
+                el.classList.remove('show');
+
+                setTimeout(() => { el.style.display = 'none'; }, 350);
+            }
+            const fs = require('fs').promises;
+            function mostrarPopupObrigado(proxies = [], paymentId = '') {
+                try {
+                    const popup = document.getElementById('popupObrigado');
+                    if (!popup) {
+                        console.error('[mostrarPopupObrigado] popupObrigado não encontrado no DOM.');
+                        return;
+                    }
+
+                    let arr = [];
+                    if (!proxies) arr = [];
+                    else if (Array.isArray(proxies)) arr = proxies.map(String).filter(Boolean);
+                    else if (typeof proxies === 'string') arr = proxies.split(/\r?\n/).map(s => s.trim()).filter(Boolean);
+                    else if (proxies.list && Array.isArray(proxies.list)) arr = proxies.list.map(String).filter(Boolean);
+
+                    window.__ultimoPacoteProxies = Array.from(arr);
+
+                    const proxiesPreview = document.getElementById('proxiesPreview');
+                    const proxiesCount = document.getElementById('proxiesCount');
+                    if (proxiesPreview) proxiesPreview.value = arr.join('\n');
+                    if (proxiesCount) proxiesCount.textContent = String(arr.length || '—');
+
+                    const safeReplace = (id) => {
+                        const el = document.getElementById(id);
+                        if (!el) return null;
+                        const clone = el.cloneNode(true);
+                        el.parentNode.replaceChild(clone, el);
+                        return clone;
+                    };
+
+                    const downloadEl = safeReplace('btnBaixarProxies') || document.getElementById('btnBaixarProxies');
+                    const insertEl = safeReplace('btnInserirProxies') || document.getElementById('btnInserirProxies');
+                    const closeEl = safeReplace('btnFecharObrigado') || document.getElementById('btnFecharObrigado');
+
+                    if (downloadEl) {
+                        downloadEl.addEventListener('click', async (ev) => {
+                            try {
+                                downloadEl.disabled = true;
+                                const content = (window.__ultimoPacoteProxies || []).join('\n');
+
+                                if (window.electronAPI && typeof window.electronAPI.invoke === 'function') {
+                                    try {
+                                        const resp = await window.electronAPI.invoke('salvar-proxies-txt', {
+                                            defaultName: `proxies_${paymentId || Date.now()}.txt`,
+                                            content
+                                        });
+                                        
+                                        if (resp && resp.success) {
+                                            alert('Arquivo salvo: ' + resp.path);
+                                        } else if (resp && resp.canceled) {
+
+                                        } else {
+                                            console.error('salvar-proxies-txt resposta inválida:', resp);
+                                            alert('Erro ao salvar o arquivo. Veja console.');
+                                        }
+                                    } catch (err) {
+                                        console.error('salvar-proxies-txt invoke erro:', err);
+                                        alert('Erro ao salvar o arquivo via Electron. Veja console.');
+                                    }
+                                } else {
+
+                                    const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+                                    const url = URL.createObjectURL(blob);
+                                    const a = document.createElement('a');
+                                    a.href = url;
+                                    a.download = `proxies_${paymentId || Date.now()}.txt`;
+                                    document.body.appendChild(a);
+                                    a.click();
+                                    a.remove();
+                                    URL.revokeObjectURL(url);
+                                }
+                            } catch (err) {
+                                console.error('Erro ao baixar proxies:', err);
+                                alert('Erro ao salvar o arquivo (veja console).');
+                            } finally {
+                                try { downloadEl.disabled = false; } catch (e) { }
+                            }
+                        });
+                    }
+
+                    if (insertEl) {
+                        insertEl.addEventListener('click', () => {
+                            const incoming = (window.__ultimoPacoteProxies || []).map(s => String(s).trim()).filter(Boolean);
+                            if (!incoming.length) {
+                                alert('Nenhuma proxy disponível');
+                                return;
+                            }
+
+                            // Procura várias formas possíveis do campo de proxies
+                            const proxiesField = document.getElementById('proxies')
+                                || document.getElementById('proxiesField')
+                                || document.querySelector('textarea[name="proxies"]')
+                                || document.querySelector('textarea#proxies')
+                                || document.querySelector('textarea');
+
+                            if (!proxiesField) {
+                                alert('Campo de proxies não encontrado. Ajuste o id "proxies" ou "proxiesField".');
+                                return;
+                            }
+
+                            const existing = (proxiesField.value || '').split(/\r?\n/).map(s => s.trim()).filter(Boolean);
+
+                            // Preserva ordem do existing e só adiciona os incoming que não estão lá
+                            const combined = [];
+                            const seen = new Set();
+
+                            for (const e of existing) {
+                                if (e && !seen.has(e)) {
+                                    combined.push(e);
+                                    seen.add(e);
+                                }
+                            }
+
+                            for (const p of incoming) {
+                                if (p && !seen.has(p)) {
+                                    combined.push(p);
+                                    seen.add(p);
+                                }
+                            }
+
+                            proxiesField.value = combined.join('\n');
+
+                            try {
+                                proxiesField.dispatchEvent(new Event('input', { bubbles: true }));
+                                proxiesField.dispatchEvent(new Event('change', { bubbles: true }));
+                            } catch (e) {
+                                console.warn('Não foi possível disparar eventos input/change:', e);
+                            }
+
+                            try {
+                                const badge = document.getElementById('proxyBadge')
+                                    || document.querySelector('.proxy-badge')
+                                    || document.querySelector('.proxies-count')
+                                    || document.querySelector('[data-proxies-badge]');
+
+                                if (badge) {
+                                 
+                                    if (typeof badge.textContent !== 'undefined') {
+                                        badge.textContent = String(combined.length);
+                                    }
+
+                                    if (badge.style && badge.style.display === 'none') badge.style.display = '';
+                                    badge.classList.add('visible'); 
+                                }
+                            } catch (e) {
+                                console.warn('Falha ao atualizar badge:', e);
+                            }
+                           
+                            window.dispatchEvent(new CustomEvent('atualizarProxiesCampo', { detail: combined }));
+                            window.dispatchEvent(new CustomEvent('proxies-inserted', { detail: { proxies: combined } }));
+                           
+                            try {
+                                const popup = document.getElementById('popupObrigado') || document.querySelector('.popup-overlay');
+                                if (popup) {
+                                    popup.classList.remove('show');
+                                    setTimeout(() => { popup.style.display = 'none'; }, 300);
+                                }
+                            } catch (e) { /* ignore */ }
+                        });
+                    }
+
+                    if (closeEl) {
+                        closeEl.addEventListener('click', () => {
+                            popup.classList.remove('show');
+                            setTimeout(() => popup.style.display = 'none', 300);
+                        });
+                    }
+
+                    popup.style.display = 'flex';
+  
+                    void popup.offsetWidth;
+                    popup.classList.add('show');
+                    popup.scrollIntoView({ block: 'center', behavior: 'smooth' });
+
+                    console.log('[mostrarPopupObrigado] exibido com', arr.length, 'proxies, paymentId=', paymentId);
+                } catch (e) {
+                    console.error('[mostrarPopupObrigado] erro:', e);
+                }
+            }
+        </script>
+
+        <script>
+            (function enableProxiesScrollEffect() {
+                const ta = document.getElementById('proxies');
+                if (!ta) return;
+                if (ta.dataset._scrollInit) return;
+                ta.dataset._scrollInit = '1';
+
+                let scrollTimer = null;
+                ta.addEventListener('scroll', () => {
+                    ta.classList.add('is-scrolling');
+                    if (scrollTimer) clearTimeout(scrollTimer);
+                    scrollTimer = setTimeout(() => {
+                        ta.classList.remove('is-scrolling');
+                    }, 180); // remove a classe 180ms depois de parar de rolar
+                });
+
+                // também mostra o thumb ao passar o mouse
+                ta.addEventListener('mouseenter', () => ta.classList.add('is-scrolling'));
+                ta.addEventListener('mouseleave', () => ta.classList.remove('is-scrolling'));
+            })();
+
+            (function initProxyBadge() {
+                const textarea = document.getElementById('proxies');
+                const badge = document.getElementById('proxyBadge');
+                if (!textarea || !badge) return;
+
+                // evita múltiplas inicializações se o script rodar mais de uma vez
+                if (textarea.dataset._proxyBadgeInit) return;
+                textarea.dataset._proxyBadgeInit = '1';
+
+                function countNonEmptyLines(text) {
+                    if (!text) return 0;
+                    return text.split(/\r?\n/)
+                        .map(s => s.trim())
+                        .filter(Boolean)   // remove linhas vazias
+                        .length;
+                }
+
+                function updateBadge() {
+                    const count = countNonEmptyLines(textarea.value);
+                    if (count > 0) {
+                        badge.textContent = String(count);
+                        badge.classList.remove('hidden');
+                        badge.classList.add('visible');
+
+                        // ajuda visual para ajustar largura dependendo dos dígitos
+                        const digits = String(count).length;
+                        badge.setAttribute('data-digits', String(digits));
+                        badge.setAttribute('aria-hidden', 'false');
+                    } else {
+                        badge.textContent = '';
+                        badge.classList.remove('visible');
+                        badge.classList.add('hidden');
+                        badge.removeAttribute('data-digits');
+                        badge.setAttribute('aria-hidden', 'true');
+                    }
+                }
+
+                // atualiza a cada digitação
+                textarea.addEventListener('input', updateBadge);
+
+                // quando colam, o paste acontece antes do input em alguns navegadores — delay curto para garantir valor
+                textarea.addEventListener('paste', () => setTimeout(updateBadge, 40));
+
+                // caso seu app carregue proxies por JS (programaticamente), observe mudanças no value:
+                const mo = new MutationObserver(() => updateBadge());
+                mo.observe(textarea, { attributes: true, attributeFilter: ['value'] });
+
+                // inicializa no carregamento
+                document.addEventListener('DOMContentLoaded', updateBadge);
+                // também executa imediatamente caso o DOM já esteja carregado
+                updateBadge();
+            })();
+            let bannerIndex = 0;
+            const bannerSlider = document.getElementById('bannerSlider');
+
+            setInterval(() => {
+                bannerIndex = (bannerIndex + 1) % 3;
+                bannerSlider.style.transform = `translateX(-${bannerIndex * 100}%)`;
+            }, 4400);
+            const mirrorBtn = document.getElementById('mirrorBtn');
+            const mobileModeBtn = document.getElementById('mobileMode');
+            const startBtn = document.getElementById('startBtn');
+            const saveUrlBtn = document.getElementById('saveUrlBtn');
+            const closeBtn = document.getElementById('closeBtn');
+            const proxiesTextarea = document.getElementById('proxies');
+            const tabCountInput = document.getElementById('tabCount');
+            const createBtn = document.getElementById('createAccountsBtn');
+            const toggleViewBtn = document.getElementById('toggleViewBtn');
+            const toggleProxyBtn = document.getElementById('toggleProxyBtn');
+            const refreshPagesBtn = document.getElementById('refreshPagesBtn');
+            const touchTranslateBtn = document.getElementById('touchTranslateBtn');
+            const toggleMonitorBtn = document.getElementById('toggleMonitorBtn');
+            const monitorPanel = document.getElementById('monitorPanel');
+            const cpuSpan = document.getElementById('cpuUsage');
+            const ramSpan = document.getElementById('ramUsage');
+            const gpuSpan = document.getElementById('gpuUsage');
+            const popupCompra = document.getElementById("popupCompra");
+            const btnComprar = document.getElementById("comprarProxyBtn");
+            const fecharPopupBtn = document.getElementById("fecharPopupBtn");
+            const gerarQrBtn = document.getElementById("gerarQrBtn");
+            const slider = document.getElementById("sliderQuantidade");
+            const label = document.getElementById("quantidadeLabel");
+            const qrContainer = document.getElementById("qrContainer");
+            const btnJaPaguei = document.getElementById('btnJaPaguei');
+            const fecharQrBtn = document.getElementById('fecharQrBtn');
+            const qrConfirm = document.getElementById('qrConfirm');
+            const qrImageContainer = document.getElementById('qrImageContainer');
+            const qrImageDiv = document.getElementById('qrImage');
+            const popupProxies = document.getElementById('popupProxies');
+            const proxiesPreview = document.getElementById('proxiesPreview');
+            const proxiesCountSpan = document.getElementById('proxiesCount');
+            const baixarProxiesBtn = document.getElementById('baixarProxiesBtn');
+            const inserirProxiesBtn = document.getElementById('inserirProxiesBtn');
+            const fecharProxiesBtn = document.getElementById('fecharProxiesBtn');
+            const splitSizeSelect = document.getElementById('splitSize');
+            const proxiesTextareaField = document.getElementById('proxies');
+            const statusPagoEl = (() => {
+                let el = document.getElementById('statusPago');
+                if (!el) {
+                    el = document.createElement('div');
+                    el.id = 'statusPago';
+                    Object.assign(el.style, {
+                        position: 'absolute',
+                        top: '12px',
+                        right: '12px',
+                        background: '#25a85a',
+                        color: '#fff',
+                        padding: '8px 12px',
+                        borderRadius: '8px',
+                        display: 'none',
+                        fontWeight: '700',
+                        zIndex: 2001,
+                        boxShadow: '0 6px 20px rgba(0,0,0,0.4)'
+                    });
+                    el.textContent = 'CONFIRMADO';
+                    const popupQrPopup = document.getElementById('popupQr')?.querySelector('.popup');
+                    if (popupQrPopup) popupQrPopup.appendChild(el);
+                }
+                return el;
+            })();
+            let checagemInterval = null;
+            let currentProxiesArray = [];
+            let currentPaymentIdForProxies = null;
+
+            let monitorVisible = false;
+
+            let proxiesEnabled = false;
+            let touchTranslate = false;
+            let mirrorMode = false;
+            let mobileMode = false;
+            let contextsOpened = 0;
+            let urlToOpen = document.getElementById('urlInput').value;
+            let monitorIntervalId = null;
+
+            if (!qrImageContainer) console.error('Elemento #qrImageContainer ausente no DOM!');
+            if (!btnJaPaguei) console.error('Elemento #btnJaPaguei ausente no DOM!');
+            if (!fecharQrBtn) console.error('Elemento #fecharQrBtn ausente no DOM!');
+
+            const btn = document.getElementById('btnSaveTabs');
+            btn.addEventListener('click', async () => {
+                const res = await window.tabsAPI.save();
+                if (res.success) {
+                    showToast("Posições salvas com sucesso!", "sucess");
+                } else {
+                    showToast("Erro ao salvar posições: " + res.error, "error");
+                }
+            });
+            const valoresPermitidos = [10, 25, 50, 100, 200, 500, 1000];
+
+            const precos = {
+                10: 1.00,
+                25: 2.00,
+                50: 25.90,
+                100: 35.90,
+                200: 62.90,
+                500: 3.00,
+                1000: 239.99
+            };
+
+            function atualizarSlider() {
+                const quantidadeIndex = parseInt(slider.value, 10);
+                const quantidade = valoresPermitidos[quantidadeIndex];
+                const preco = (precos.hasOwnProperty(quantidade) ? precos[quantidade] : null);
+
+                const porcentagem = (slider.value / slider.max) * 100;
+                slider.style.background = `linear-gradient(to right, #b638bd ${porcentagem}%, #444 ${porcentagem}%)`;
+
+                if (preco !== null) {
+                    label.textContent = `Quantidade: ${quantidade} — Valor: R$ ${preco.toFixed(2)}`;
+                } else {
+                    label.textContent = `Quantidade: ${quantidade} — Valor: —`;
+                }
+            }
+            slider.addEventListener("input", atualizarSlider);
+            atualizarSlider();
+
+            btnComprar.addEventListener("click", () => {
+                popupCompra.classList.add("show");
+            });
+
+            fecharPopupBtn.addEventListener("click", () => {
+                popupCompra.classList.remove("show");
+                setTimeout(() => {
+                    qrContainer.innerHTML = "";
+                }, 400);
+            });
+
+            gerarQrBtn.addEventListener("click", async () => {
+                try {
+                    const quantidadeIndex = parseInt(slider.value, 10);
+                    const quantidade = valoresPermitidos[quantidadeIndex];
+                    const valorSelecionado = precos[quantidade];
+
+                    if (typeof valorSelecionado !== 'number') {
+                        alert('Preço não configurado para essa quantidade. Contate o suporte.');
+                        return;
+                    }
+
+                    const descricao = `Compra - ${quantidade} unidades`;
+                    const email = "comprador@teste.com";
+
+                    console.log('[renderer] solicitando criar-pagamento-pix', { valor: valorSelecionado, descricao, email });
+
+                    const result = await window.electronAPI.invoke('criar-pagamento-pix', {
+                        valor: valorSelecionado,
+                        descricao,
+                        email
+                    });
+
+                    console.log('[renderer] resposta criar-pagamento-pix (raw):', result);
+
+                    mostrarQrEPegarPagamento(result);
+                } catch (err) {
+                    console.error("Erro gerar PIX:", err);
+                    alert("Erro ao comunicar com o processo principal: " + (err?.message || err));
+                }
+            });
+
+            document.getElementById("fecharQrBtn").addEventListener("click", () => {
+                document.getElementById("popupQr").classList.remove("show");
+            });
+            const btnReset = document.getElementById('btnResetTabs');
+            btnReset.addEventListener('click', async () => {
+                const res = await window.tabsAPI.reset();
+                if (res.success) {
+                    showToast("Posições resetadas com sucesso!", "sucess");
+                } else {
+                    showToast("Erro ao resetar posições: " + res.error, "error");
+                }
+            });
+
+            toggleMonitorBtn.onclick = () => {
+                monitorVisible = !monitorVisible;
+                toggleMonitorBtn.textContent = monitorVisible ? 'PAINEL DESEMPENHO: ATIVADO' : 'PAINEL DESEMPENHO: DESATIVADO';
+
+                if (monitorVisible) {
+                    monitorPanel.classList.add('visible');
+                    startMonitor();
+                } else {
+                    monitorPanel.classList.remove('visible');
+
+
+                    setTimeout(() => {
+                        stopMonitor();
+                    }, 400);
+                }
+
+
+                if (monitorVisible) {
+                    startMonitor();
+                } else {
+                    stopMonitor();
+                }
+            };
+            function getQrImageDiv() {
+                let el = document.getElementById('qrImage');
+                if (!el) {
+                    const container = document.getElementById('qrImageContainer');
+                    if (!container) {
+                        console.error('Elemento #qrImageContainer ausente no DOM.');
+                        return null;
+                    }
+                    el = document.createElement('div');
+                    el.id = 'qrImage';
+                    el.style.width = '100%';
+                    el.style.display = 'flex';
+                    el.style.alignItems = 'center';
+                    el.style.justifyContent = 'center';
+                    container.prepend(el);
+                    console.warn('[fix] #qrImage criado dinamicamente dentro de #qrImageContainer');
+                }
+                return el;
+            }
+            function showToast(message, type = 'success') {
+                const toast = document.getElementById("toast");
+                toast.innerText = message;
+
+
+                toast.className = '';
+                toast.classList.add('show');
+                toast.classList.add(type === 'error' ? 'error' : 'success');
+
+
+                void toast.offsetWidth;
+
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 3000);
+            }
+
+            function updateMirrorButton() {
+                mirrorBtn.textContent = mirrorMode ? 'ESPELHAMENTO ATIVO' : 'ESPELHAMENTO';
+                mirrorBtn.classList.toggle('green', mirrorMode);
+                mirrorBtn.classList.toggle('red', !mirrorMode);
+            }
+
+            function updateMobileButton() {
+                mobileModeBtn.classList.toggle('purple', mobileMode);
+            }
+              
+            function updateProxyButton() {
+                toggleProxyBtn.textContent = proxiesEnabled ? 'PROXIES: ATIVADO' : 'PROXIES: DESATIVADO';
+                toggleProxyBtn.classList.toggle('green', proxiesEnabled);
+                toggleProxyBtn.classList.toggle('red', !proxiesEnabled);
+                proxiesTextarea.disabled = false;
+            }
+
+            function updateTouchTranslateBtn() {
+                touchTranslateBtn.textContent = touchTranslate ? 'CLIQUE REALISTA' : 'CLIQUE NORMAL';
+                touchTranslateBtn.classList.toggle('green', touchTranslate);
+                touchTranslateBtn.classList.toggle('red', !touchTranslate);
+            }
+
+
+            toggleProxyBtn.onclick = () => {
+                proxiesEnabled = !proxiesEnabled;
+                updateProxyButton();
+            };
+
+            mobileModeBtn.onclick = () => {
+                mobileMode = !mobileMode;
+                updateMobileButton();
+            };
+
+            mirrorBtn.onclick = async () => {
+                if (contextsOpened === 0) return;
+                mirrorBtn.disabled = true;
+                try {
+                    await window.electronAPI.invoke('toggle-mirror');
+                    mirrorMode = !mirrorMode;
+                    updateMirrorButton();
+                } catch (err) {
+                    showToast("Erro ao alternar espelhamento: " + err.message, "error");
+                }
+                mirrorBtn.disabled = false;
+            };
+
+            touchTranslateBtn.onclick = async () => {
+                touchTranslateBtn.disabled = true;
+                try {
+                    const nextState = !touchTranslate;
+                    await window.electronAPI.invoke('toggle-touch-translation', nextState);
+                    touchTranslate = nextState;
+                    updateTouchTranslateBtn();
+                } catch (err) {
+                    showToast("Erro ao alternar clique realista: " + err.message, "error");
+                }
+                touchTranslateBtn.disabled = false;
+            };
+
+            saveUrlBtn.onclick = () => {
+                const input = document.getElementById('urlInput').value.trim();
+                if (input && (input.startsWith('http://') || input.startsWith('https://'))) {
+                    urlToOpen = input;
+                    showToast("Link salvo!", "success");
+                } else {
+                    showToast("URL inválida. Use http ou https.", "error");
+                }
+            };
+
+            startBtn.onclick = () => {
+                const proxiesRaw = proxiesTextarea.value.trim();
+                const tabCount = parseInt(tabCountInput.value);
+                if (proxiesEnabled && !proxiesRaw) return showToast("Insira proxies válidas ou desative o uso de proxies.", "error");
+                if (isNaN(tabCount) || tabCount < 1) return showToast("Quantidade de abas inválida.", "error");
+
+                let proxies = proxiesRaw.split('\n').map(p => p.trim()).filter(Boolean);
+
+                const proxiesUsadas = proxies.slice(0, tabCount);
+                const proxiesRestantes = proxies.slice(tabCount);
+
+                if (proxiesEnabled) {
+                    proxiesTextarea.value = proxiesRestantes.join('\n');
+                }
+
+                window.electronAPI.send('start-proxies', {
+                    proxies,
+                    tabCount,
+                    mobileMode,
+                    mirrorMode,
+                    urlToOpen,
+                    proxiesEnabled
+                });
+            };
+
+            window.electronAPI.on('start-proxies-done', (event, data) => {
+                contextsOpened = data.opened;
+                mirrorMode = data.mirrorMode || false;
+                updateMirrorButton();
+            });
+
+            closeBtn.onclick = async () => {
+                const result = await window.electronAPI.invoke('close-all');
+                if (result.success) {
+                    contextsOpened = 0;
+                    mirrorMode = false;
+                    updateMirrorButton();
+                    showToast("Abas fechadas com sucesso!", "success");
+                } else {
+                    showToast("Erro ao fechar abas: " + result.error, "error");
+                }
+            };
+
+            createBtn.onclick = async () => {
+                try {
+                    const result = await window.electronAPI.invoke('create-accounts');
+                    if (Array.isArray(result)) {
+                        showToast("Erro ao fechar abas: " + result.error, "error");
+                        (`${result.length} contas criadas`);
+                    } else {
+                        showToast("Erro ao fechar abas: " + result.error, "error");
+                        ("Nenhuma conta foi criada.", "error");
+                    }
+                } catch (err) {
+                    showToast("Erro ao fechar abas: " + result.error, "error");
+                    ("Erro ao criar contas: " + err.message, "error");
+                }
+            };
+
+            toggleViewBtn.onclick = () => {
+                window.electronAPI.send('abrir-contas');
+            };
+
+            refreshPagesBtn.onclick = () => {
+                window.electronAPI.send('refresh-pages');
+            };
+
+            function formatPercent(value) {
+                return isNaN(value) ? '--%' : `${value.toFixed(1)}%`;
+            }
+
+            function updateMonitor(cpu, ram, gpu) {
+                cpuSpan.textContent = cpu || '--%';
+                ramSpan.textContent = ram || '--%';
+                gpuSpan.textContent = gpu || '--%';
+            }
+            async function startMonitor() {
+                monitorIntervalId = setInterval(async () => {
+                    try {
+                        const usage = await window.electronAPI.invoke('getSystemUsage');
+                        updateMonitor(usage.cpu, usage.ram, usage.gpu);
+                    } catch (err) {
+                        updateMonitor('--%', '--%', '--%');
+                    }
+                }, 1000);
+            }
+
+            async function mostrarQrEPegarPagamento(result) {
+                console.log('[renderer] resposta criar-pagamento-pix (raw):', result);
+                const pagamento = (result && result.success) ? result.pagamento : (result?.pagamento ?? result);
+                if (!pagamento) { alert('Resposta de criação de pagamento inválida.'); return; }
+
+                const qrBase64 = pagamento?.point_of_interaction?.transaction_data?.qr_code_base64
+                    || pagamento?.qr_code_base64 || null;
+
+                const paymentId = pagamento?.id || pagamento?.payment_id ||
+                    pagamento?.point_of_interaction?.transaction_data?.transaction_id ||
+                    pagamento?.external_reference || null;
+
+                if (!qrBase64) { alert('Pagamento criado, mas QR não foi retornado.'); return; }
+
+                const container = document.getElementById('qrImageContainer');
+                if (!container) { alert('Erro interno: elemento de exibição do QR ausente.'); return; }
+
+                // insere imagem (limpa antes)
+                container.querySelector('img')?.remove();
+                const img = document.createElement('img');
+                img.src = `data:image/png;base64,${qrBase64}`;
+                img.alt = 'QR PIX';
+                img.style.maxWidth = '100%';
+                img.style.height = 'auto';
+                img.style.objectFit = 'contain';
+                img.style.display = 'block';
+                container.prepend(img);
+
+                if (paymentId) {
+                    container.dataset.paymentId = String(paymentId);
+                    iniciarChecagemPagamento(paymentId);
+                } else {
+                    delete container.dataset.paymentId;
+                    console.warn('[renderer] Nenhum paymentId extraído.');
+                }
+
+                const qrConfirmEl = document.getElementById('qrConfirm');
+                if (qrConfirmEl) { resetCheckAnimation(); qrConfirmEl.style.display = 'none'; }
+
+                document.getElementById('popupQr').classList.add('show');
+            }
+
+            function iniciarChecagemPagamento(paymentId) {
+                if (!paymentId) return;
+                if (checagemInterval) clearInterval(checagemInterval);
+                console.log('[renderer] iniciando polling de pagamento para id=', paymentId);
+
+                checagemInterval = setInterval(async () => {
+                    try {
+                        const resp = await window.electronAPI.invoke('verificar-pagamento', paymentId);
+                        console.log('[renderer] resposta verificar-pagamento:', resp);
+                        if (!resp) return;
+                        const pago = resp?.pago ?? (resp?.status === 'paid') ?? (resp?.status === 'approved');
+                        if (pago) confirmarPagamento(resp);
+                    } catch (err) {
+                        console.error('Erro ao verificar pagamento (poll):', err);
+                    }
+                }, 3000);
+            }
+
+            async function confirmarPagamento(resp) {
+                if (checagemInterval) {
+                    clearInterval(checagemInterval);
+                    checagemInterval = null;
+                }
+                console.log('[renderer] pagamento confirmado', resp);
+
+                try { animateCheck(); } catch (e) { console.warn('anim check err', e); }
+
+                // Esconde o QR depois
+                setTimeout(() => {
+                    if (qrConfirm) qrConfirm.style.display = 'none';
+                    document.getElementById('popupQr').classList.remove('show');
+                }, 4000);
+
+                // --- normaliza valor para achar quantidade ---
+                const mapaValores = { "1.00": 10, "2.00": 25, "25.00": 50, "50.00": 100, "100.00": 200, "3.00": 500, "500.00": 1000 };
+
+                const rawValor = resp?.valorPago ?? resp?.raw?.valor ?? resp?.raw?.amount ?? resp?.amount;
+                const valorNum = rawValor != null ? Number(String(rawValor).replace(/[^\d.-]/g, '').replace(',', '.')) : NaN;
+                if (!Number.isFinite(valorNum)) {
+                    console.warn('[DEBUG] rawCandidate:', rawValor, '-> valorNum:', valorNum);
+                    alert(`Valor pago (${String(rawValor)}) não corresponde a nenhuma quantidade definida.`);
+                    return;
+                }
+                const valorNormalizado = Number(valorNum).toFixed(2);
+                const quantidade = mapaValores[valorNormalizado];
+                if (!quantidade) {
+                    alert(`Valor pago (${valorNormalizado}) não corresponde a nenhuma quantidade definida.`);
+                    return;
+                }
+
+                // Extrai paymentId do objeto recebido
+                const paymentIdToSend = String(resp?.paymentId ?? resp?.raw?.id ?? resp?.raw?.payment_id ?? '');
+
+                // 1) registra o pagamento no seu servidor (importantíssimo)
+                try {
+                    console.log('[DEBUG] registrar-pagamento payload:', { payment_id: paymentIdToSend, amount: valorNum, product_id: null, status: 'approved' });
+                    const registerRes = await fetch(`${window.config.API_URL}/registrar-pagamento`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            payment_id: paymentIdToSend,
+                            // se você tem product_id no front, envie; se não, deixe como null para o servidor inferir pelo amount
+                            product_id: null,
+                            amount: valorNum,
+                            status: 'approved'
+                        })
+                    }).then(r => r.json());
+
+                    console.log('[DEBUG] registrar-pagamento resposta:', registerRes);
+
+                    if (!registerRes?.success) {
+                        // registro falhou: aborta e mostra erro
+                        console.warn('registrar-pagamento falhou:', registerRes);
+                        alert('Pagamento confirmado, mas não foi possível registrar o pagamento no servidor. Verifique o console do servidor.');
+                        return;
+                    }
+
+                    const paymentIdForLookup = paymentIdToSend || registerRes.paymentRowId || registerRes.payment_id;
+                    // 2) Depois de registrar, pede as proxies (usa IPC invoke que já existe)
+                    console.log('[DEBUG] confirmarPagamento - solicitando proxies', { paymentIdForLookup, quantidade });
+                    const obter = await window.electronAPI.invoke('obter-proxies', { paymentId: paymentIdForLookup, quantidade });
+                    console.log('[DEBUG] obter-proxies result:', obter);
+
+                    if (obter?.success && Array.isArray(obter.proxies)) {
+                        mostrarPopupObrigado(obter.proxies, paymentIdForLookup);
+                    } else {
+                        console.warn('obter-proxies não retornou proxies válidas:', obter);
+                        alert('Pagamento confirmado, mas não foi possível buscar as proxies. Verifique o console para mais detalhes.');
+                    }
+
+                } catch (err) {
+                    console.error('Erro no fluxo confirmarPagamento:', err);
+                    alert('Pagamento confirmado, mas ocorreu um erro ao contatar o servidor. Veja o console.');
+                } finally {
+                    if (statusPago) statusPago.style.display = 'none';
+                    if (qrConfirm) {
+                        qrConfirm.classList.remove('show');
+                        qrConfirm.style.display = 'none';
+                    }
+                    try { delete qrImageContainer.dataset.paymentId; } catch (e) { }
+                }
+            }
+                                           
+            const btnJaPagueiEl = document.getElementById('btnJaPaguei');
+            if (btnJaPagueiEl) {
+                btnJaPagueiEl.addEventListener('click', async () => {
+                    try {
+                        const cid = document.getElementById('qrImageContainer');
+                        const paymentId = cid?.dataset?.paymentId;
+                        if (!paymentId) { alert('ID do pagamento não encontrado. Reabra o pagamento.'); return; }
+                        const result = await window.electronAPI.invoke('verificar-pagamento', paymentId);
+                        const pago = result?.pago ?? (result?.status === 'paid') ?? (result?.status === 'approved');
+                        if (pago) confirmarPagamento(result);
+                        else alert('Pagamento ainda não confirmado. Tente novamente em alguns segundos.');
+                    } catch (err) {
+                        alert('Erro ao verificar pagamento: ' + (err?.message || err));
+                    }
+                });
+            }
+
+            const fecharQrBtnEl = document.getElementById('fecharQrBtn');
+            if (fecharQrBtnEl) {
+                fecharQrBtnEl.addEventListener('click', () => {
+                    document.getElementById('popupQr').classList.remove('show');
+                    if (checagemInterval) { clearInterval(checagemInterval); checagemInterval = null; }
+                    const container = document.getElementById('qrImageContainer');
+                    if (container) delete container.dataset.paymentId;
+                    resetCheckAnimation();
+                });
+            }
+
+            function normalizeProxiesResponse(proxiesResp) {
+
+                if (!proxiesResp) return [];
+                if (Array.isArray(proxiesResp)) return proxiesResp.map(String).filter(Boolean);
+                if (typeof proxiesResp === 'string') {
+
+                    return proxiesResp.split(/\r?\n/).map(s => s.trim()).filter(Boolean);
+                }
+
+                if (proxiesResp.list && Array.isArray(proxiesResp.list)) return proxiesResp.list.map(String).filter(Boolean);
+                return [];
+            }
+
+            function splitArrayIntoChunks(arr, size) {
+                if (!size || size <= 0) return [arr];
+                const out = [];
+                for (let i = 0; i < arr.length; i += size) out.push(arr.slice(i, i + size));
+                return out;
+            }
+
+            async function abrirPopupProxies(paymentId) {
+                try {
+                    if (!paymentId) {
+                        alert('ID do pagamento ausente; não é possível buscar proxies.');
+                        return;
+                    }
+                    currentPaymentIdForProxies = paymentId;
+                    const resp = await window.electronAPI.invoke('obter-proxies', { paymentId });
+                    if (!resp || !resp.success) {
+                        alert('Não foi possível obter as proxies: ' + (resp?.error || 'sem resposta'));
+                        return;
+                    }
+                    const arr = normalizeProxiesResponse(resp.proxies);
+                    currentProxiesArray = arr;
+                    proxiesCountSpan.textContent = arr.length;
+                    proxiesPreview.value = arr.join('\n');
+                    popupProxies.classList.add('show');
+                } catch (err) {
+                    console.error('abrirPopupProxies erro', err);
+                    alert('Erro ao buscar proxies: ' + (err?.message || err));
+                }
+            }
+
+            function showProxyActionButtons(proxies = [], paymentId = '') {
+                if (!Array.isArray(proxies) || proxies.length === 0) return;
+
+                if (document.getElementById('proxyActionsContainer')) {
+                    return;
+                }
+
+                const container = document.createElement('div');
+                container.id = 'proxyActionsContainer';
+                container.style.position = 'absolute';
+                container.style.right = '20px';
+                container.style.bottom = '20px';
+                container.style.zIndex = '9999';
+                container.style.display = 'flex';
+                container.style.gap = '8px';
+                container.style.pointerEvents = 'auto';
+
+                const btnDownload = document.createElement('button');
+                btnDownload.id = 'btnDownloadProxies';
+                btnDownload.textContent = 'Baixar proxies (.txt)';
+                btnDownload.style.padding = '8px 12px';
+                btnDownload.style.borderRadius = '6px';
+                btnDownload.style.border = 'none';
+                btnDownload.style.cursor = 'pointer';
+                btnDownload.style.boxShadow = '0 2px 6px rgba(0,0,0,0.2)';
+
+                const btnInsert = document.createElement('button');
+                btnInsert.id = 'btnInsertProxies';
+                btnInsert.textContent = 'Inserir no campo';
+                btnInsert.style.padding = '8px 12px';
+                btnInsert.style.borderRadius = '6px';
+                btnInsert.style.border = 'none';
+                btnInsert.style.cursor = 'pointer';
+                btnInsert.style.boxShadow = '0 2px 6px rgba(0,0,0,0.2)';
+
+                container.appendChild(btnDownload);
+                container.appendChild(btnInsert);
+                document.body.appendChild(container);
+
+                btnDownload.addEventListener('click', async () => {
+                    try {
+                        btnDownload.disabled = true;
+                        const content = proxies.join('\n');
+                        const defaultName = `proxies_${paymentId || Date.now()}.txt`;
+
+                        const resp = await window.electronAPI.saveProxiesFile({ defaultName, content });
+                        if (resp && resp.success) {
+                            alert(`Arquivo salvo: ${resp.path}`);
+                        } else if (resp && resp.canceled) {
+                        } else {
+                            console.error('Erro ao salvar:', resp);
+                            alert('Erro ao salvar o arquivo. Veja console para detalhes.');
+                        }
+                    } catch (err) {
+                        console.error('Erro no download de proxies:', err);
+                        alert('Erro ao salvar as proxies (ver console).');
+                    } finally {
+                        btnDownload.disabled = false;
+                    }
+                });
+
+                btnInsert.addEventListener('click', async () => {
+                    try {
+                        btnInsert.disabled = true;
+                        const selectors = [
+                            '#proxiesInput',
+                            'textarea[name="proxies"]',
+                            'textarea#proxies',
+                            'input#proxies',
+                            'textarea',
+                            'input[type="text"]'
+                        ];
+
+                        let field = null;
+                        for (const sel of selectors) {
+                            const el = document.querySelector(sel);
+                            if (!el) continue;
+                            const placeholder = (el.getAttribute && el.getAttribute('placeholder')) || '';
+                            if (placeholder && placeholder.toLowerCase().includes('proxy')) {
+                                field = el;
+                                break;
+                            }
+                            if (!field && el.tagName.toLowerCase() === 'textarea') field = el;
+                            if (!field && el.id && el.id.toLowerCase().includes('proxy')) field = el;
+                        }
+
+                        if (!field) {
+                            alert('Campo de proxies não encontrado automaticamente. Cole manualmente ou verifique o seletor.');
+                            return;
+                        }
+ 
+                        const text = proxies.join('\n');
+                        if (field.tagName.toLowerCase() === 'input') {
+                            field.value = text;
+                        } else {
+                            field.value = text;
+                        }
+
+                        field.dispatchEvent(new Event('input', { bubbles: true }));
+                        field.dispatchEvent(new Event('change', { bubbles: true }));
+
+                        alert(`Inseridas ${proxies.length} proxies no campo.`);
+                    } catch (err) {
+                        console.error('Erro ao inserir proxies no campo:', err);
+                        alert('Erro ao inserir proxies (ver console).');
+                    } finally {
+                        btnInsert.disabled = false;
+                    }
+                });
+
+                document.addEventListener('click', function onDocClick(e) {
+                    if (!container.contains(e.target)) {
+                        setTimeout(() => {
+                            if (document.getElementById('proxyActionsContainer')) {
+                                document.getElementById('proxyActionsContainer').remove();
+                            }
+                        }, 5000);
+                        document.removeEventListener('click', onDocClick);
+                    }
+                });
+            }
+
+            updateMirrorButton();
+            updateMobileButton();
+            updateProxyButton();
+            updateTouchTranslateBtn();
+            let intervalStatusCheck = null;
+
+            async function verificarStatusUsuario() {
+                const token = localStorage.getItem('token');
+                if (!token) return;
+
+                try {
+                    const resposta = await fetch('https://server-production-0a24.up.railway.app', {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+
+                    if (!resposta.ok) {
+                        console.warn('Falha ao verificar status do usuário:', await resposta.text());
+                        return;
+                    }
+
+                    const dados = await resposta.json();
+                    if (!dados.ativo) {
+                        document.getElementById('desativadoBox').style.display = 'flex';
+                        setTimeout(() => {
+                            localStorage.removeItem('token');
+                            window.electronAPI?.send('login-red');
+                            console.log('sucesso')
+                        }, 3000);
+                    }
+                } catch (erro) {
+                    console.error('Erro ao verificar status:', erro);
+                }
+            }
+            window.addEventListener('DOMContentLoaded', () => {
+                intervalStatusCheck = setInterval(verificarStatusUsuario, 15000); // a cada 15 segundos
+            });
+        </script>
+</body>
+</html>

@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Atualiza&ccedil;&atilde;o dispon&iacute;vel</title>
+
+    <!-- Montserrat (fallback) + Anton (display) -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Anton&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-dark: #000000;
+            --text: #ffffff;
+            --muted: rgba(255,255,255,0.92);
+            --accent-1: #7c2bff;
+            --accent-2: #b14cff;
+            --btn-radius: 28px;
+        }
+
+        html, body {
+            height: 100%;
+            margin: 0;
+            background: var(--bg-dark);
+            color: var(--text);
+            font-family: "Montserrat", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* bg GIF: coloque bg.gif no mesmo diret�rio */
+        .bg {
+            position: fixed;
+            inset: 0;
+            background-image: url('./bg.gif');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: 0;
+            filter: saturate(1) contrast(0.85);
+        }
+
+            .bg::after {
+                content: "";
+                position: absolute;
+                inset: 0;
+                background: rgba(0,0,0,0.58);
+            }
+
+        .wrap {
+            position: relative;
+            z-index: 2;
+            min-height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            box-sizing: border-box;
+        }
+
+        .card {
+            width: 100%;
+            max-width: 980px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 22px;
+            padding: 30px 20px;
+            box-sizing: border-box;
+        }
+
+        /* Montserrat em primeiro para garantir acentos; Anton fallback */
+        h1 {
+            margin: 0;
+            font-family: "Montserrat", "Anton", "Bahnschrift", sans-serif;
+            font-weight: 900;
+            font-size: 64px;
+            line-height: 0.95;
+            letter-spacing: 1px;
+            color: var(--text);
+            text-transform: uppercase;
+            text-shadow: 0 6px 20px rgba(0,0,0,0.6);
+        }
+
+        p.lead {
+            margin: 0;
+            max-width: 760px;
+            color: var(--muted);
+            font-size: 20px;
+            line-height: 1.6;
+            font-weight: 400;
+        }
+
+        .cta {
+            margin-top: 16px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 18px 64px;
+            border-radius: var(--btn-radius);
+            font-weight: 700;
+            font-size: 20px;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            color: #fff;
+            background: linear-gradient(90deg, var(--accent-1) 0%, var(--accent-2) 100%);
+            box-shadow: 0 10px 30px rgba(124,43,255,0.18);
+            transition: transform .12s ease, box-shadow .12s ease;
+            overflow: visible; /* importante se depois quiser glow */
+            position: relative;
+            z-index: 3;
+        }
+
+            .btn:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 18px 40px rgba(124,43,255,0.22);
+            }
+
+            .btn:active {
+                transform: translateY(1px);
+            }
+
+        /* ===== bloqueio de sele��o / arraste / contextmenu global ===== */
+        /* impede sele��o e arraste globalmente */
+        html, body, .wrap, .card, * {
+            -webkit-user-select: none !important;
+            -moz-user-select: none !important;
+            -ms-user-select: none !important;
+            user-select: none !important;
+            -webkit-touch-callout: none !important;
+            -webkit-user-drag: none !important;
+            user-drag: none !important;
+            -khtml-user-drag: none !important;
+        }
+
+        /* mant�m inputs/textarea/select/button utiliz�veis (clic�veis/selecion�veis) */
+        input, textarea, select, button {
+            -webkit-user-select: text !important;
+            -moz-user-select: text !important;
+            -ms-user-select: text !important;
+            user-select: text !important;
+            -webkit-user-drag: auto !important;
+        }
+
+        /* imagens e links n�o ser�o arrast�veis */
+        img, a, video {
+            -webkit-user-drag: none !important;
+            user-drag: none !important;
+            draggable: false;
+        }
+
+        /* se precisar permitir sele��o em algum elemento, use .selectable */
+        .selectable {
+            -webkit-user-select: text !important;
+            -moz-user-select: text !important;
+            -ms-user-select: text !important;
+            user-select: text !important;
+        }
+
+        @media (max-width:720px) {
+            h1 {
+                font-size: 34px;
+            }
+
+            p.lead {
+                font-size: 16px;
+            }
+
+            .btn {
+                padding: 14px 36px;
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg" aria-hidden="true"></div>
+
+    <div class="wrap" role="main" aria-labelledby="titulo">
+        <div class="card">
+            <!-- Note que aqui usamos entidades HTML para todos os acentos -->
+            <h1 id="titulo">ATUALIZA&Ccedil;&Atilde;O DISPON&Iacute;VEL</h1>
+            <p class="lead">Sua vers&atilde;o do njx anty est&aacute; desatualizada,<br>para atualizar clique no bot&atilde;o abaixo</p>
+
+            <div class="cta" role="region" aria-label="A&ccedil;&otilde;es">
+                <button id="atualizarBtn" class="btn" aria-label="Atualizar aplica&ccedil;&atilde;o">ATUALIZAR</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Prote��es JS complementares: previne dragstart, selectstart, contextmenu, copy/cut/paste
+        (function () {
+            document.addEventListener('selectstart', function (e) {
+                if (e.target.closest && e.target.closest('.selectable')) return; // permite sele��o em elementos marcados
+                e.preventDefault();
+            }, { passive: false });
+
+            document.addEventListener('dragstart', function (e) {
+                if (e.target.closest && e.target.closest('.draggable')) return;
+                e.preventDefault();
+            }, { passive: false });
+
+            document.addEventListener('contextmenu', function (e) {
+                if (e.target.closest && e.target.closest('.allow-context')) return;
+                e.preventDefault();
+            });
+
+            document.addEventListener('copy', function (e) { e.preventDefault(); }, { passive: false });
+            document.addEventListener('cut', function (e) { e.preventDefault(); }, { passive: false });
+            document.addEventListener('paste', function (e) { e.preventDefault(); }, { passive: false });
+
+            // Define draggable=false onde aplic�vel
+            document.querySelectorAll('img, a, video').forEach(el => el.setAttribute('draggable', 'false'));
+
+            // Prote��o extra em touch: evita sele��o por swipe
+            let touchMoved = false;
+            document.addEventListener('touchmove', function () { touchMoved = true; }, { passive: true });
+            document.addEventListener('touchend', function (e) {
+                if (touchMoved && !(e.target.closest && e.target.closest('.selectable'))) {
+                    e.preventDefault();
+                }
+                touchMoved = false;
+            }, { passive: false });
+
+            // fun��o utilit�ria exposta para permitir sele��o dinamicamente
+            window.__enableSelectionOn = function (selector) {
+                document.querySelectorAll(selector).forEach(el => el.classList.add('selectable'));
+            };
+        })();
+    </script>
+
+    <script>
+        (function () {
+            const btn = document.getElementById('atualizarBtn');
+            const infoEl = document.createElement('div');
+            infoEl.style.marginTop = '10px';
+            infoEl.style.color = 'rgba(255,255,255,0.85)';
+            infoEl.style.fontSize = '14px';
+            btn.parentNode.appendChild(infoEl);
+
+            const API_URL = (window.config && window.config.API_URL) ? window.config.API_URL.replace(/\/$/, '') : null;
+            if (!API_URL) {
+                console.error('[desatualizado] API_URL n�o configurado em window.config');
+                infoEl.innerHTML = 'Erro de configura&ccedil;&atilde;o: servidor n&atilde;o encontrado.';
+                btn.disabled = true;
+                return;
+            }
+
+            infoEl.innerHTML = 'Carregando link de atualiza&ccedil;&atilde;o...';
+            btn.disabled = true;
+
+            const token = (() => {
+                try { return window.localStorage.getItem('token') || null; } catch (_) { return null; }
+            })();
+
+            fetch(`${API_URL}/atualizacao`, {
+                method: 'GET',
+                headers: token ? { 'Authorization': 'Bearer ' + token, 'Accept': 'application/json' } : { 'Accept': 'application/json' }
+            })
+                .then(async res => {
+                    if (!res.ok) {
+                        const txt = await res.text().catch(() => null);
+                        throw new Error(`HTTP ${res.status} ${txt || ''}`);
+                    }
+                    return res.json();
+                })
+                .then(json => {
+                    const url = json.download_url || null;
+                    if (!url) {
+                        infoEl.innerHTML = 'Link de atualiza&ccedil;&atilde;o n&atilde;o definido. Contate o suporte.';
+                        btn.disabled = true;
+                        return;
+                    }
+                    btn.disabled = false;
+                    // uso innerHTML com entidades para evitar problemas de codifica��o
+                    infoEl.innerHTML = `Vers&atilde;o dispon&iacute;vel: ${json.versao || '�'}`;
+                    btn.dataset.downloadUrl = url;
+                })
+                .catch(err => {
+                    console.error('[desatualizado] erro ao buscar link:', err);
+                    infoEl.innerHTML = 'N&atilde;o foi poss&iacute;vel obter o link de atualiza&ccedil;&atilde;o. Tente novamente mais tarde.';
+                    // opcional: habilitar bot�o com fallback
+                    btn.disabled = false;
+                });
+
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const url = btn.dataset.downloadUrl;
+                if (!url) { alert('Link de atualiza&ccedil;&atilde;o indispon&iacute;vel. Contate o suporte.'); return; }
+                try {
+                    if (window.electronAPI && typeof window.electronAPI.openExternal === 'function') {
+                        window.electronAPI.openExternal(url);
+                    } else {
+                        window.open(url, '_blank', 'noopener');
+                    }
+                } catch (err) {
+                    console.error('[desatualizado] falha ao abrir URL:', err);
+                    window.open(url, '_blank', 'noopener');
+                }
+            });
+        })();
+    </script>
+</body>
+</html>

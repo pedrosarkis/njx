@@ -1,0 +1,65 @@
+{
+    "name": "bot",
+    "version": "1.0.1",
+    "description": "Automatizador NJX",
+    "author": "Seu Nome",
+    "main": "index.js",
+    "scripts": {
+        "start": "electron . --no-sandbox",
+        "build": "electron-builder",
+        "postinstall": "npm run setup-browsers",
+        "setup-browsers": "npx playwright install chromium"
+    },
+    "build": {
+        "appId": "com.njx.anty",
+        "productName": "NJX ANTY",
+        "files": [
+            "**/*",
+            "!node_modules/.cache",
+            "!dist",
+            "!**/*.map",
+            "playwright-browsers/**/*"
+        ],
+        "asarUnpack": [
+            "node_modules/playwright/**/*",
+            "node_modules/playwright-core/**/*"
+        ],
+        "extraResources": [
+            {
+                "from": "playwright-browsers",
+                "to": "playwright-browsers"
+            }
+        ],
+        "win": {
+            "target": "nsis",
+            "icon": "lego.ico"
+        },
+        "directories": {
+            "output": "dist"
+        },
+        "nsis": {
+            "oneClick": false,
+            "allowToChangeInstallationDirectory": true
+        }
+    },
+    "dependencies": {
+        "@faker-js/faker": "^9.8.0",
+        "axios": "^1.10.0",
+        "bcrypt": "^6.0.0",
+        "cors": "^2.8.5",
+        "dotenv": "^17.0.1",
+        "express": "^5.1.0",
+        "faker": "^5.5.3",
+        "jsonwebtoken": "^9.0.2",
+        "keytar": "^7.9.0",
+        "mercadopago": "^2.8.0",
+        "pg": "^8.16.3",
+        "playwright": "^1.54.2",
+        "sudo-prompt": "^9.2.1",
+        "systeminformation": "^5.27.7"
+    },
+    "devDependencies": {
+        "electron": "^27.3.11",
+        "electron-builder": "^26.0.12"
+    }
+}

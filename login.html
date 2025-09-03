@@ -1,0 +1,933 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Página de Login</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            user-select: none;
+            height: 100vh;
+            background: linear-gradient(135deg, #2c2c2c, #4f4f4f);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Segoe UI',sans-serif;
+            overflow: hidden;
+        }
+
+        .container {
+            text-align: center;
+            opacity: 0;
+            transform: translateY(18px);
+            animation: containerIn 520ms cubic-bezier(.2,.9,.3,1) forwards;
+        }
+
+        @keyframes containerIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logo {
+            width: 150px;
+            margin-bottom: 30px;
+            transition: transform 360ms ease, filter 360ms ease;
+        }
+
+            .logo.subtle {
+                transform: scale(1.02);
+                filter: drop-shadow(0 10px 24px rgba(106,71,255,0.08));
+            }
+
+        .input-group {
+            position: relative;
+            margin: 15px 0;
+            width: 280px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+            .input-group input {
+                width: 100%;
+                padding: 10px 40px 10px 56px;
+                background-color: #000;
+                border: none;
+                border-radius: 20px;
+                color: white;
+                font-size: 14px;
+                transition: background-color 700ms ease;
+            }
+
+                .input-group input:focus {
+                    transform: translateY(0px);
+                    box-shadow: none;
+                    background: linear-gradient(180deg, rgba(6,6,6,0.98), rgba(0,0,0,0.6));
+                    outline: none;
+                }
+
+            .input-group img.icon {
+                position: absolute;
+                left: 12px;
+                top: 50%;
+                transform: translateY(-50%);
+                width: 34px;
+                opacity: .8;
+            }
+
+            .input-group .show-password-btn {
+                position: absolute;
+                right: 12px;
+                top: 50%;
+                transform: translateY(-50%);
+                background: transparent;
+                border: none;
+                cursor: pointer;
+                width: 34px;
+                height: 34px;
+                padding: 0;
+            }
+
+                .input-group .show-password-btn img {
+                    width: 100%;
+                    height: 100%;
+                    opacity: .8;
+                    transition: opacity 0.2s ease;
+                }
+
+                .input-group .show-password-btn:hover img {
+                    opacity: 1; 
+                    transform: none; 
+                }
+
+        #loginBtn {
+            margin: 20px auto 0;
+            display: block;
+            width: 220px;
+            padding: 10px 0;
+            border-radius: 25px;
+            background: linear-gradient(90deg,#5223a0,#8147ff);
+            color: #ffffff;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            position: relative;
+            border: none;
+            overflow: hidden;
+            text-transform: uppercase;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3), 0 0 6px rgba(180,150,255,0.7);
+            box-shadow: 0 0 8px rgba(120,80,255,0.7), 0 0 20px rgba(120,80,255,0.5), inset 0 0 8px rgba(255,255,255,0.15);
+            animation: glowPulse 3s ease-in-out infinite;
+            transition: background 0.25s ease, box-shadow 0.25s ease;
+        }
+
+            #loginBtn:hover {
+                background: linear-gradient(90deg,#6230c0,#9d66ff);
+                box-shadow: 0 0 12px rgba(140,100,255,1), 0 0 28px rgba(140,100,255,0.9), inset 0 0 10px rgba(255,255,255,0.2);
+            }
+
+            #loginBtn:active {
+                transform: scale(0.98);
+                box-shadow: 0 0 6px rgba(100,70,255,0.8), 0 0 16px rgba(100,70,255,0.6), inset 0 0 6px rgba(255,255,255,0.1);
+            }
+
+            #loginBtn::after {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: -50%;
+                width: 200%;
+                height: 100%;
+                background: linear-gradient( 120deg, transparent, rgba(255,255,255,0.18), transparent );
+                transform: translateX(-100%);
+                animation: shine 4s infinite;
+            }
+
+        @keyframes shine {
+            to {
+                transform: translateX(100%);
+            }
+        }
+
+        @keyframes glowPulse {
+            0%, 100% {
+                box-shadow: 0 0 8px rgba(120,80,255,0.7), 0 0 20px rgba(120,80,255,0.5), inset 0 0 8px rgba(255,255,255,0.15);
+            }
+
+            50% {
+                box-shadow: 0 0 12px rgba(140,100,255,0.9), 0 0 28px rgba(140,100,255,0.7), inset 0 0 10px rgba(255,255,255,0.2);
+            }
+        }
+
+        .key-modal-backdrop {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(5,6,8,0.6);
+            backdrop-filter: blur(4px);
+            z-index: 9999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 220ms ease;
+        }
+
+            .key-modal-backdrop.show {
+                opacity: 1;
+                pointer-events: all;
+            }
+
+        .key-modal-card {
+            width: 360px;
+            max-width: calc(100% - 32px);
+            background: linear-gradient(180deg, rgba(20,20,20,0.95), rgba(12,12,12,0.98));
+            border-radius: 12px;
+            padding: 20px;
+            color: #fff;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+            transform: translateY(-12px) scale(.99);
+            opacity: 0;
+            transition: transform 240ms cubic-bezier(.12,.9,.32,1), opacity 200ms ease;
+            position: relative;
+            text-align: center;
+        }
+
+        .key-modal-backdrop.show .key-modal-card {
+            transform: translateY(0) scale(1);
+            opacity: 1;
+        }
+
+        .key-modal-backdrop.closing .key-modal-card {
+            transform: translateY(8px) scale(.98);
+            opacity: 0;
+        }
+
+        .key-modal-close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: transparent;
+            border: none;
+            color: rgba(255,255,255,0.7);
+            font-size: 20px;
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 6px;
+        }
+
+            .key-modal-close:hover {
+                background: rgba(255,255,255,0.03);
+                color: #fff;
+            }
+
+        .key-modal-icon {
+            font-size: 30px;
+            margin-bottom: 8px;
+        }
+
+        .key-modal-title {
+            margin: 0 0 6px;
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .key-modal-text {
+            margin: 0 0 14px;
+            font-size: 13px;
+            color: rgba(255,255,255,0.75);
+        }
+
+        .key-input {
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.06);
+            background: rgba(0,0,0,0.4);
+            color: #fff;
+            font-size: 15px;
+            outline: none;
+            margin-bottom: 8px;
+            transition: box-shadow 150ms ease, border-color 150ms ease, transform 80ms ease;
+        }
+
+            .key-input:focus {
+                box-shadow: 0 6px 20px rgba(100,70,255,0.09);
+                border-color: rgba(120,80,255,0.85);
+                transform: translateY(-2px);
+            }
+
+        .key-error {
+            color: #ffb4c6;
+            font-size: 13px;
+            min-height: 18px;
+            margin-bottom: 6px;
+            transition: opacity 160ms ease;
+        }
+
+        .key-modal-card.shake {
+            animation: shakeX 520ms cubic-bezier(.36,.07,.19,.97) both;
+        }
+
+        @keyframes shakeX {
+            10%,90% {
+                transform: translateX(-2px)
+            }
+
+            20%,80% {
+                transform: translateX(4px)
+            }
+
+            30%,50%,70% {
+                transform: translateX(-8px)
+            }
+
+            40%,60% {
+                transform: translateX(8px)
+            }
+        }
+
+        .key-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 6px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(90deg,#6f46ff,#a28bff);
+            border: none;
+            color: white;
+            padding: 10px 14px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 700;
+            box-shadow: 0 8px 20px rgba(100,70,255,0.12);
+        }
+
+        .btn-ghost {
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.06);
+            color: rgba(255,255,255,0.85);
+            padding: 10px 12px;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .btn-buy {
+            background: linear-gradient(90deg, #FFD700, #FFA500); /* dourado → laranja */
+            border: none;
+            color: #fff;
+            padding: 10px 14px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 700;
+            box-shadow: 0 8px 20px rgba(255, 215, 0, 0.2); /* brilho dourado */
+            text-decoration: none; /* remove underline */
+            display: inline-block;
+            text-align: center;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .spinner {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            border: 2px solid rgba(255,255,255,0.18);
+            border-top-color: #fff;
+            animation: spin 700ms linear infinite;
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 6px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Success overlay - smaller, iPhone-like */
+        .success-overlay {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0,0,0,0.3);
+            backdrop-filter: blur(5px);
+            z-index: 10050;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 260ms ease;
+        }
+
+            .success-overlay.show {
+                opacity: 1;
+                pointer-events: none;
+            }
+
+        .success-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            background: rgba(0,0,0,0.45);
+            padding: 18px;
+            border-radius: 14px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+            transform: translateY(6px) scale(.98);
+            transition: transform 360ms cubic-bezier(.12,.9,.32,1);
+        }
+
+        .success-overlay.show .success-card {
+            transform: translateY(0) scale(1);
+        }
+
+        .success-svg {
+            width: 100px;
+            height: 100px;
+        }
+
+            .success-svg circle {
+                fill: none;
+                stroke: rgba(255,255,255,0.85);
+                stroke-width: 4;
+            }
+            
+            .success-svg path {
+                fill: none;
+                stroke: #7ce08a;
+                stroke-width: 5;
+                stroke-linecap: round;
+                stroke-linejoin: round;
+                stroke-dasharray: 100;
+                stroke-dashoffset: 100;
+                transition: stroke-dashoffset 1200ms cubic-bezier(.2,.9,.3,1);
+            }
+
+        .success-text {
+            font-size: 13px;
+            font-weight: 500;
+            color: white;
+            opacity: 0;
+            transform: translateY(4px);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+        .success-overlay.show .success-text {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @media (max-width:420px) {
+            .key-modal-card {
+                padding: 16px;
+                width: 92%;
+            }
+
+            .key-modal-icon {
+                font-size: 26px;
+            }
+        }
+
+        #modal {
+            display: flex; 
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            z-index: 11000;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transform: scale(0.96);
+            pointer-events: none;
+            transition: opacity 0.25s ease, transform 0.25s ease;
+        }
+
+            #modal.show {
+                opacity: 1;
+                transform: scale(1);
+                pointer-events: all;
+            }
+
+            #modal .modal-content {
+                background: #222;
+                padding: 20px;
+                border-radius: 8px;
+                color: #fff;
+                max-width: 200px;
+                text-align: center;
+                box-sizing: border-box;
+            }
+
+            #modal button {
+                margin-top: 10px;
+                padding: 5px 20px;
+                cursor: pointer;
+                border: none;
+                border-radius: 4px;
+                background-color: #552e9f;
+                color: white;
+                font-weight: 600;
+                transition: background-color 0.3s ease;
+            }
+
+                #modal button:hover {
+                    background-color: #6a47c9;
+                }
+        #registerBtn {
+            background: none;
+            border: none;
+            color: #aaa;
+            font-size: 14px;
+            text-decoration: underline;
+            margin-top: 12px;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+            #registerBtn:hover {
+                color: #fff;
+            }
+        #registerModal {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(5,6,8,0.6);
+            backdrop-filter: blur(4px);
+            z-index: 10000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 300ms ease;
+        }
+
+            #registerModal.show {
+                opacity: 1;
+                pointer-events: all;
+            }
+
+            /* conteúdo do modal */
+            #registerModal .key-modal-card {
+                background: linear-gradient(180deg, rgba(20,20,20,0.95), rgba(12,12,12,0.98));
+                border-radius: 12px;
+                padding: 20px;
+                color: #fff;
+                box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+                transform: translateY(20px) scale(.96);
+                opacity: 0;
+                transition: transform 400ms cubic-bezier(.16,.8,.32,1), opacity 350ms ease;
+            }
+
+            /* quando abre */
+            #registerModal.show .key-modal-card {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }      
+       
+    </style>
+</head>
+<body>
+    <!-- key modal -->
+    <div id="keyModal" class="key-modal-backdrop" aria-hidden="true" role="dialog" aria-modal="true" style="display:none;">
+        <div class="key-modal-card" role="document">
+            <button class="key-modal-close" aria-label="Fechar">&times;</button>
+            <div class="key-modal-icon">🔐</div>
+            <h3 class="key-modal-title">Ativação necessária</h3>
+            <p class="key-modal-text">Insira sua key de ativação para reativar a conta</p>
+
+            <input id="inputKey" class="key-input" type="text" maxlength="32" placeholder="Cole ou digite a key" inputmode="numeric" />
+            <div class="key-error" id="keyError" aria-live="polite"></div>
+
+            <div class="key-actions">
+                <button id="confirmKeyBtn" class="btn-primary">Confirmar</button>
+                <button id="cancelKeyBtn" class="btn-ghost">Cancelar</button>
+                <a id="comprarKeyBtn"
+                   href="https://vipnjx.rbshop.site/"
+                   target="_blank"
+                   class="btn-buy">Comprar Key</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- success overlay (circle + check) -->
+    <div id="successOverlay" class="success-overlay" aria-hidden="true" role="status">
+        <div class="success-card" aria-hidden="true">
+            <svg class="success-svg" viewBox="0 0 52 52" aria-hidden="true">
+                <circle cx="26" cy="26" r="24"></circle>
+                <path id="successPath" d="M14 27 L22 34 L38 16"></path>
+            </svg>
+            <div class="success-text" id="successText">Ativado com sucesso</div>
+        </div>
+    </div>
+
+    <div class="container" id="container">
+        <img src="njxlogo.png" draggable="false" alt="Logo NJX" class="logo" id="logo" />
+
+        <div class="input-group">
+            <img src="users.png" alt="Ícone Usuário" draggable="false" class="icon" />
+            <input type="tel" id="usuario" placeholder="Telefone" pattern="[0-9]*" inputmode="numeric" />
+        </div>
+
+        <div class="input-group">
+            <img src="senhas.png" draggable="false" alt="Ícone Senha" class="icon" />
+            <input type="password" id="senhaInput" draggable="false" placeholder="Senha" />
+            <button type="button" draggable="false" class="show-password-btn" aria-label="Mostrar senha" title="Mostrar senha">
+                <img src="eye-closed.png" draggable="false" alt="Mostrar senha" id="toggleEyeIcon" />
+            </button>
+        </div>
+
+        <button id="loginBtn">Login</button>
+        <button id="registerBtn">Cadastrar-se</button>
+    </div>
+    
+
+    <!-- Modal de registro -->
+    <div id="registerModal" class="key-modal-backdrop" style="display:none;">
+        <div class="key-modal-card">
+            <button class="key-modal-close" id="closeRegister">&times;</button>
+            <h3 class="key-modal-title">Criar Conta</h3>
+
+            <input id="regUsuario"
+                   class="key-input"
+                   type="text"
+                   placeholder="Usuário"
+                   minlength="3"
+                   maxlength="15"
+                   pattern="[A-Za-z0-9]{3,15}"
+                   required />
+            <input id="regTelefone"
+                   class="key-input"
+                   type="tel"
+                   placeholder="Telefone"
+                   inputmode="numeric"
+                   maxlength="14"
+                   onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+                   onpaste="return false;" />
+            <div style="position: relative; width: 100%;">
+                <input id="regSenha" class="key-input" type="password" placeholder="Senha" minlength="6" />
+                <button type="button" id="toggleRegSenha"
+                        style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+                 background: transparent; border: none; cursor: pointer; padding: 0;">
+                    <img src="eye-closed.png" id="toggleRegSenhaIcon" alt="Mostrar senha" style="width: 20px; height: 20px; opacity: .8;" />
+                </button>
+            </div>
+            <div class="key-actions">
+                <button id="confirmRegisterBtn" class="btn-primary">Concluir</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal">
+        <div class="modal-content">
+            <p id="modalMsg"></p>
+            <button id="modalOkBtn">OK</button>
+        </div>
+    </div>
+
+    <script>
+        // animation timing: path draw duration + extra wait after it finishes
+        const PATH_ANIM_MS = 1200;       // path drawing (circle/check) duration
+        const AFTER_ANIM_WAIT_MS = 4000; // wait 4 seconds AFTER animation ends, before proceeding
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const cont = document.getElementById('container'), logo = document.getElementById('logo');
+            setTimeout(() => { cont.classList.add('show'); logo.classList.add('subtle'); setTimeout(() => logo.classList.remove('subtle'), 700); }, 60);
+        });
+        const toggleRegSenha = document.getElementById('toggleRegSenha');
+const regSenhaInput = document.getElementById('regSenha');
+const toggleRegSenhaIcon = document.getElementById('toggleRegSenhaIcon');
+
+if (toggleRegSenha) {
+  toggleRegSenha.addEventListener('click', () => {
+    if (regSenhaInput.type === 'password') {
+      regSenhaInput.type = 'text';
+      toggleRegSenhaIcon.src = 'eye-open.png';
+      toggleRegSenhaIcon.alt = 'Ocultar senha';
+    } else {
+      regSenhaInput.type = 'password';
+      toggleRegSenhaIcon.src = 'eye-closed.png';
+      toggleRegSenhaIcon.alt = 'Mostrar senha';
+    }
+  });
+}
+        const loginBtn = document.getElementById('loginBtn');
+        const senhaInput = document.getElementById('senhaInput');
+        const toggleBtn = document.querySelector('.show-password-btn');
+        const eyeIcon = document.getElementById('toggleEyeIcon');
+        const userInput = document.getElementById('usuario');
+
+        const registerBtn = document.getElementById('registerBtn');
+        const registerModal = document.getElementById('registerModal');
+        const closeRegister = document.getElementById('closeRegister');
+        const confirmRegisterBtn = document.getElementById('confirmRegisterBtn');
+
+        registerBtn.addEventListener('click', () => {
+    registerModal.style.display = 'flex';
+    
+    // dá tempo do browser renderizar o estado inicial
+    setTimeout(() => {
+        registerModal.classList.add('show');
+    }, 20); // 20~50ms já resolve
+});
+
+closeRegister.addEventListener('click', () => {
+    registerModal.classList.remove('show');
+    setTimeout(() => registerModal.style.display = 'none', 200);
+});
+
+confirmRegisterBtn.addEventListener('click', async () => {
+    const usuario = document.getElementById('regUsuario').value.trim();
+    const telefone = document.getElementById('regTelefone').value.trim();
+    const senha = document.getElementById('regSenha').value.trim();
+
+if (!usuario || !telefone || !senha) {
+    showError("Preencha todos os campos!");
+    return;
+}
+if (!/^[A-Za-z0-9]{3,15}$/.test(usuario)) {
+    showError("O usuário deve ter entre 3 e 15 caracteres, apenas letras e números.");
+    return;
+}
+if (senha.length < 6) {
+    showError("A senha deve ter pelo menos 6 caracteres.");
+    return;
+}
+if (!/^\d{10,11}$/.test(telefone)) {
+    showError("Digite um número de telefone válido com DDD.");
+    return;
+}
+
+    try {
+        const resposta = await fetch(`${window.config.API_URL}/register`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ usuario, telefone, senha })
+        });
+
+        const dados = await resposta.json();
+        if (resposta.ok && dados.sucesso) {
+    showError("✅ Registro concluído! Agora faça login.");   
+    closeRegister.click();
+} else {
+    if (dados.erro) {
+        if (/usuário/i.test(dados.erro)) {
+            showError("❌ Esse usuário já existe.");
+        } else if (/telefone/i.test(dados.erro)) {
+            showError("❌ Esse telefone já está cadastrado.");
+        } else {
+            showError("❌ " + dados.erro);
+        }
+    } else {
+        showError("❌ Erro inesperado no registro");
+    }
+}
+    } catch (err) {
+        console.error(err);
+        showError("Erro de conexão ao registrar");
+    }
+});
+
+closeRegister.addEventListener('click', () => {
+    registerModal.classList.add('closing');
+    registerModal.classList.remove('show');
+    setTimeout(() => {
+        registerModal.style.display = 'none';
+        registerModal.classList.remove('closing');
+    }, 320); // tempo maior para combinar com a transição
+});
+        const modal = document.getElementById('modal');
+        const modalMsg = document.getElementById('modalMsg');
+        const modalOkBtn = document.getElementById('modalOkBtn');
+
+        function showError(msg) {
+            modalMsg.textContent = msg;
+            modal.classList.add('show');
+        }
+        modalOkBtn.addEventListener('click', () => {
+            modal.classList.remove('show');
+        });
+
+        toggleBtn.addEventListener('click', () => {
+            if (senhaInput.type === 'password') {
+                senhaInput.type = 'text';
+                eyeIcon.src = 'eye-open.png';
+                eyeIcon.alt = 'Ocultar senha';
+            } else {
+                senhaInput.type = 'password';
+                eyeIcon.src = 'eye-closed.png';
+                eyeIcon.alt = 'Mostrar senha';
+            }
+        });
+        loginBtn.addEventListener('click', async () => {
+            const usuario = userInput.value.trim();
+            const senha = senhaInput.value.trim();
+            const ip = window.electronAPI?.getMac?.() || '';
+
+            if (!usuario || !senha || !ip) { showError("Preencha usuário e senha corretamente."); return; }
+            const API_URL = window.config?.API_URL;
+            if (!API_URL) { showError("❌ API_URL não recebida"); return; }
+
+            try {
+                const resposta = await fetch(`${API_URL}/login`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ usuario, senha, ip }) });
+                const dados = await resposta.json();
+
+                const precisaKey = resposta.status === 403 && typeof dados.erro === 'string' && /primeiro acesso|key de ativação|reativar|expir/i.test(dados.erro.toLowerCase());
+
+                if (precisaKey) {
+                    // abrir modal passando função que aceita controls
+                    mostrarKeyModal(async (keyDigitada, { close, setError, setLoading, playSuccess }) => {
+                        try {
+                            setError(''); setLoading(true);
+                            const novaResposta = await fetch(`${API_URL}/login`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ usuario, senha, ip, key: keyDigitada }) });
+                            const novaDados = await novaResposta.json();
+
+                            if (novaResposta.ok && novaDados.token) {
+                                playSuccess(novaDados.expiracao, () => {
+                                    localStorage.setItem('token', novaDados.token);
+                                    if (window.electronAPI?.enviarLoginSucesso) {
+                                        window.electronAPI.enviarLoginSucesso({ usuario, token: novaDados.token });
+                                    } else {
+                                        showError('Login efetuado, mas API do Electron não disponível.');
+                                    }
+                                });
+                            } else {
+
+                                setError(novaDados.erro || 'Key inválida');
+                            }
+                        } catch (e) {
+                            console.error(e);
+                            setError('Erro ao validar key');
+                        } finally {
+                            setLoading(false);
+                        }
+                    });
+                    return;
+                }
+
+                if (resposta.ok && dados.token) {
+                    localStorage.setItem('token', dados.token);
+                    if (window.electronAPI?.enviarLoginSucesso) window.electronAPI.enviarLoginSucesso({ usuario, token: dados.token });
+                    else showError('API do Electron não disponível.');
+                    return;
+                }
+
+                showError(dados.erro || 'Usuário ou senha inválidos.');
+            } catch (err) { console.error(err); showError('Erro ao conectar com o servidor.'); }
+        });
+
+
+        function mostrarKeyModal(callback) {
+            const backdrop = document.getElementById('keyModal');
+            const input = document.getElementById('inputKey');
+            const confirmBtn = document.getElementById('confirmKeyBtn');
+            const cancelBtn = document.getElementById('cancelKeyBtn');
+            const closeBtn = backdrop.querySelector('.key-modal-close');
+            const errBox = document.getElementById('keyError');
+            const card = backdrop.querySelector('.key-modal-card');
+
+            let animatingOut = false, shakeTO = null;
+
+            function openModal() {
+                errBox.textContent = ''; input.value = ''; confirmBtn.disabled = false; confirmBtn.textContent = 'Confirmar';
+                backdrop.style.display = 'flex'; requestAnimationFrame(() => backdrop.classList.add('show'));
+                setTimeout(() => input.focus(), 160); document.body.style.overflow = 'hidden';
+            }
+            function finishClose() {
+                backdrop.style.display = 'none'; backdrop.classList.remove('closing'); animatingOut = false;
+                document.body.style.overflow = ''; card.classList.remove('shake');
+                if (shakeTO) { clearTimeout(shakeTO); shakeTO = null; }
+            }
+            function closeModal() {
+                if (animatingOut) return; animatingOut = true;
+                backdrop.classList.add('closing'); backdrop.classList.remove('show');
+                setTimeout(finishClose, 260);
+                window.removeEventListener('keydown', onKeyDown); backdrop.removeEventListener('click', onBackdropClick);
+                confirmBtn.onclick = null; cancelBtn.onclick = null; closeBtn.onclick = null;
+            }
+
+            function setError(msg) {
+                errBox.textContent = msg || '';
+                if (msg && msg.length > 0) {
+
+                    card.classList.remove('shake');
+                    void card.offsetWidth;
+                    card.classList.add('shake');
+                    if (shakeTO) clearTimeout(shakeTO);
+                    shakeTO = setTimeout(() => card.classList.remove('shake'), 520);
+                } else {
+                    card.classList.remove('shake');
+                    if (shakeTO) { clearTimeout(shakeTO); shakeTO = null; }
+                }
+            }
+
+            function setLoading(loading) {
+                confirmBtn.disabled = !!loading;
+                if (loading) { confirmBtn.dataset.orig = confirmBtn.textContent; confirmBtn.innerHTML = '<span class="spinner" aria-hidden="true"></span> Validando...'; }
+                else { confirmBtn.innerHTML = confirmBtn.dataset.orig || 'Confirmar'; }
+            }
+
+
+            function playSuccess(expiracao, afterDone) {
+                const overlay = document.getElementById('successOverlay');
+                const text = document.getElementById('successText');
+                const path = document.getElementById('successPath');
+
+                if (expiracao) {
+                    try {
+                        const d = new Date(expiracao);
+                        text.textContent = 'Ativado até ' + d.toLocaleString();
+                    }
+                    catch { text.textContent = 'Ativado com sucesso'; }
+                } else {
+                    text.textContent = 'Ativado com sucesso';
+                }
+
+                overlay.classList.add('show');
+
+                path.style.transition = `stroke-dashoffset 1200ms cubic-bezier(.2,.9,.3,1)`;
+                path.style.strokeDashoffset = '100';
+                void path.offsetWidth;
+                path.style.strokeDashoffset = '0';
+
+                setTimeout(() => {
+                    overlay.classList.remove('show');
+                    setTimeout(() => {
+                        path.style.transition = '';
+                        path.style.strokeDashoffset = '100';
+                        if (typeof afterDone === 'function') afterDone();
+                    }, 300);
+                }, 1200 + 3300);
+            }
+
+            async function onConfirmClick() {
+                const keyDigitada = input.value.trim();
+                if (keyDigitada.length < 1) { setError('Por favor insira a key.'); input.focus(); return; }
+                try { setError(''); setLoading(true); await callback(keyDigitada, { close: closeModal, setError, setLoading, playSuccess }); }
+                catch (e) { console.error('Erro no callback do modal:', e); setError('Erro interno. Tente novamente.'); }
+                finally { setLoading(false); }
+            }
+
+            function onCancel() { closeModal(); }
+            function onKeyDown(e) { if (e.key === 'Escape') onCancel(); else if (e.key === 'Enter') onConfirmClick(); }
+            function onBackdropClick(e) { if (e.target === backdrop) onCancel(); }
+
+            confirmBtn.onclick = onConfirmClick; cancelBtn.onclick = onCancel; closeBtn.onclick = onCancel;
+            window.addEventListener('keydown', onKeyDown); backdrop.addEventListener('click', onBackdropClick);
+
+            openModal();
+        }
+    </script>
+</body>
+</html>

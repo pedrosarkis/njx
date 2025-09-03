@@ -1,0 +1,361 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <title>Otimizar Computador</title>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 700px;
+            height: 580px;
+            overflow: hidden;
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(-45deg, #080812, #0c0d1f, #0f102a, #0a0a1c);
+            background-size: 400% 400%;
+            animation: gradientShift 12s ease infinite;
+            color: white;
+        }
+
+        @keyframes gradientShift {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        body.fade-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        body.fade-out {
+            animation: fadeOut 0.5s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(1.03);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            to {
+                opacity: 0;
+                transform: scale(0.97);
+            }
+        }
+
+        .logo {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            height: 80px;
+            filter: drop-shadow(0 0 4px #240545);
+            z-index: 10;
+        }
+
+        .container {
+            position: absolute;
+            top: 110px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 520px;
+            background-color: rgba(0, 0, 0, 0.45);
+            padding: 30px 24px 20px;
+            border-radius: 20px;
+            border: 1px solid rgba(0, 255, 204, 0.15);
+            backdrop-filter: blur(10px);
+            text-align: left;
+        }
+
+        .option {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+            .option input[type="checkbox"] {
+                appearance: none;
+                width: 18px;
+                height: 18px;
+                border: 2px solid #00ffcc;
+                border-radius: 4px;
+                margin-right: 10px;
+                cursor: pointer;
+                position: relative;
+            }
+
+                .option input[type="checkbox"]:checked::before {
+                    content: '✔';
+                    position: absolute;
+                    top: -2px;
+                    left: 2px;
+                    font-size: 14px;
+                    color: #00ffcc;
+                }
+
+                .option input[type="checkbox"]:checked {
+                    box-shadow: 0 0 6px #00ffcc;
+                }
+
+        .botao-executar {
+            background: linear-gradient(to right, #00ffcc, #00e6b8);
+            color: #000;
+            font-weight: bold;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            cursor: pointer;
+            max-width: 300px;
+            width: 100%;
+            margin: 30px auto 0;
+            display: block;
+            animation: pulse 2s infinite;
+            transition: transform 0.2s ease;
+        }
+
+            .botao-executar:hover {
+                transform: scale(1.05);
+            }
+
+            .botao-executar:disabled {
+                opacity: 0.6;
+                cursor: not-allowed;
+                animation: none;
+            }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(0, 255, 204, 0.7);
+            }
+
+            70% {
+                box-shadow: 0 0 10px 10px rgba(0, 255, 204, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(0, 255, 204, 0);
+            }
+        }
+
+        .btn-voltar {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background-color: rgba(128, 128, 128, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s, transform 0.2s;
+            z-index: 20;
+            -webkit-app-region: no-drag;
+        }
+
+            .btn-voltar:hover {
+                background-color: rgba(255, 255, 255, 0.1);
+                transform: scale(1.1);
+            }
+
+            .btn-voltar img {
+                width: 40px;
+                height: 40px;
+            }
+        #desativadoBox {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .mensagem-desativado {
+            background: #222;
+            color: white;
+            border: 2px solid #f00;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            font-family: sans-serif;
+            box-shadow: 0 0 20px red;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        img {
+            -webkit-user-drag: none;
+        }
+        * {
+            user-select: none !important;
+            -webkit-user-select: none !important;
+            -moz-user-select: none !important;
+            -ms-user-select: none !important;
+        }
+
+        img, span, .icon-button {
+            pointer-events: auto !important;
+            user-select: none !important;
+            -webkit-user-drag: none !important;
+            -webkit-user-select: none !important;
+        }
+    </style>
+</head>
+<body class="fade-in">
+    <button class="btn-voltar" id="voltarBtn">
+        <img src="voltar.png" alt="Voltar">
+    </button>
+
+    <img src="njxlogo.png" alt="Logo" class="logo" />
+
+    <div class="container">
+        <div class="option"><input type="checkbox" id="limpar-temp" value="limpar-temp"><label for="limpar-temp">Limpar arquivos temporários</label></div>
+        <div class="option"><input type="checkbox" id="limpar-dns" value="limpar-dns"><label for="limpar-dns">Limpar cache DNS</label></div>
+        <div class="option"><input type="checkbox" id="liberar-ram" value="liberar-ram"><label for="liberar-ram">Liberar memória RAM</label></div>
+        <div class="option"><input type="checkbox" id="desfragmentar" value="desfragmentar"><label for="desfragmentar">Desfragmentar disco</label></div>
+        <div class="option"><input type="checkbox" id="modo-alto-desempenho" value="modo-alto-desempenho"><label for="modo-alto-desempenho">Ativar modo alto desempenho</label></div>
+        <div class="option"><input type="checkbox" id="verificar-sfc" value="verificar-sfc"><label for="verificar-sfc">Verificar integridade do sistema</label></div>
+        <div class="option"><input type="checkbox" id="limpar-prefetch" value="limpar-prefetch"><label for="limpar-prefetch">Limpar arquivos Prefetch</label></div>
+
+        <button id="executarBtn" class="botao-executar">
+            <span id="btnTexto">OTIMIZAR</span>
+            <span id="loadingTexto" style="display: none;"><span id="progresso">0%</span></span>
+        </button>
+    </div>
+    <div id="desativadoBox" style="display: none;">
+        <div class="mensagem-desativado">
+            <h3>⚠️ Conta desativada</h3>
+            <p>Sua conta foi desativada.<br>Você será desconectado.</p>
+        </div>
+    </div>
+    <script>
+        // Animação de volta
+        const voltarBtn = document.getElementById("voltarBtn");
+        voltarBtn.addEventListener("click", () => {
+            document.body.classList.remove("fade-in");
+            document.body.classList.add("fade-out");
+
+            setTimeout(() => {
+                window.location.href = "launcher.html";
+            }, 400);
+        });
+
+        // Execução
+        document.getElementById('executarBtn').addEventListener('click', async () => {
+            const btn = document.getElementById('executarBtn');
+            const texto = document.getElementById('btnTexto');
+            const loading = document.getElementById('loadingTexto');
+            const progressoSpan = document.getElementById('progresso');
+
+            btn.disabled = true;
+            texto.style.display = 'none';
+            loading.style.display = 'inline';
+
+            const tarefasSelecionadas = Array.from(document.querySelectorAll('input[type=checkbox]:checked')).map(cb => cb.value);
+
+            if (tarefasSelecionadas.length === 0) {
+                alert('Selecione pelo menos uma tarefa.');
+                btn.disabled = false;
+                texto.style.display = 'inline';
+                loading.style.display = 'none';
+                return;
+            }
+
+            const total = tarefasSelecionadas.length;
+            let atual = 0;
+
+            for (const tarefa of tarefasSelecionadas) {
+                try {
+                    await window.electronAPI.invoke('executar-tarefa-individual', tarefa);
+                    await new Promise(resolve => setTimeout(resolve, 300));
+                } catch (err) {
+                    console.error('Erro ao executar tarefa:', tarefa, err);
+                }
+
+                atual++;
+                const progresso = Math.round((atual / total) * 100);
+                progressoSpan.innerText = `${progresso}%`;
+            }
+
+            progressoSpan.innerText = `Concluído`;
+            setTimeout(() => {
+                texto.style.display = 'inline';
+                loading.style.display = 'none';
+                progressoSpan.innerText = '0%';
+                btn.disabled = false;
+            }, 2000);
+        });
+        let intervalStatusCheck = null;
+
+        async function verificarStatusUsuario() {
+            const token = localStorage.getItem('token');
+            if (!token) return; // se não estiver logado
+
+            try {
+                const resposta = await fetch('https://genio-production.up.railway.app/user/status', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (!resposta.ok) {
+                    console.warn('Falha ao verificar status do usuário:', await resposta.text());
+                    return;
+                }
+
+                const dados = await resposta.json();
+                if (!dados.ativo) {
+                    document.getElementById('desativadoBox').style.display = 'flex';
+                    setTimeout(() => {
+                        localStorage.removeItem('token');
+                        window.electronAPI?.send('login-red');
+                        console.log('sucesso')
+                    }, 3000);
+                }
+            } catch (erro) {
+                console.error('Erro ao verificar status:', erro);
+            }
+        }
+        window.addEventListener('DOMContentLoaded', () => {
+            intervalStatusCheck = setInterval(verificarStatusUsuario, 15000); // a cada 15 segundos
+        });
+    </script>
+</body>
+</html>
