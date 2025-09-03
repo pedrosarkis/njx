@@ -6,6 +6,7 @@ const args = process.argv;
 console.log("🔍 process.argv:", args);
 let API_URL = 'https://server-production-0a24.up.railway.app';
 let CLIENT_VERSION = '';
+let OFFLINE_LOGIN = false;
 
 for (const arg of process.argv) {
     if (typeof arg !== 'string') continue;
@@ -13,13 +14,17 @@ for (const arg of process.argv) {
         API_URL = arg.split('--apiUrl=')[1] || '';
     } else if (arg.startsWith('--clientVersion=')) {
         CLIENT_VERSION = arg.split('--clientVersion=')[1] || '';
+    } else if (arg.startsWith('--offlineLogin=')) {
+        const v = arg.split('--offlineLogin=')[1] || '';
+        OFFLINE_LOGIN = (String(v).toLowerCase() === 'true' || String(v) === '1');
     }
 }
 
 
 contextBridge.exposeInMainWorld('nconfig', {
     API_URL,
-    CLIENT_VERSION
+    CLIENT_VERSION,
+    OFFLINE_LOGIN
 });
 contextBridge.exposeInMainWorld('config', {
     API_URL: 'https://server-production-0a24.up.railway.app'
@@ -29,6 +34,7 @@ contextBridge.exposeInMainWorld('abrirLinkExterno', {
 });
 
 console.log("✅ API_URL carregada do argumento:", API_URL);
+console.log("✅ OFFLINE_LOGIN:", OFFLINE_LOGIN);
 
 function getMacAddress() {
     const interfaces = os.networkInterfaces();

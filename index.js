@@ -235,18 +235,15 @@ ipcMain.handle('obter-proxies', async (_event, { paymentId, quantidade }) => {
     }
 });
 
-process.env.PLAYWRIGHT_BROWSERS_PATH = path.join(__dirname, 'playwright-browsers');
-
 require('dotenv').config();
 console.log('API_URL carregada do .env:', process.env.API_URL);
 
 const isPackaged = app.isPackaged;
-
-const chromiumPath = isPackaged
-    ? path.join(process.resourcesPath, "playwright-browsers", "chromium-1181", "chrome-win", "chrome.exe")
-    : path.join(__dirname, "resources", "playwright-browsers", "chromium-1181", "chrome-win", "chrome.exe");
-
-const chromiumExecutablePath = chromiumPath;
+// Define onde o Playwright procura os browsers (dev x prod)
+const browsersDir = isPackaged
+    ? path.join(process.resourcesPath, 'playwright-browsers')
+    : path.join(__dirname, 'playwright-browsers');
+process.env.PLAYWRIGHT_BROWSERS_PATH = browsersDir;
 const abaStoragePath = path.join(app.getPath('userData'), 'abas-storage');
 if (!fs.existsSync(abaStoragePath)) fs.mkdirSync(abaStoragePath);
 
@@ -421,7 +418,8 @@ function createWindow() {
             sandbox: false,
             additionalArguments: [
                 `--apiUrl=${process.env.API_URL}`,
-                `--clientVersion=${app.getVersion()}`
+                `--clientVersion=${app.getVersion()}`,
+                `--offlineLogin=${String(process.env.OFFLINE_LOGIN || '')}`
             ]
         }
     });
@@ -472,27 +470,34 @@ function createWindow() {
         const clientVersion = (app && typeof app.getVersion === 'function') ? app.getVersion() : (process.env.CLIENT_VERSION || '0.0.0');
         console.log('Versão do cliente:', clientVersion);
 
-        // busca versão no servidor
+        // Checagem de versão: permite pular quando OFFLINE_LOGIN estiver habilitado
+        const OFFLINE_LOGIN = String(process.env.OFFLINE_LOGIN || '').toLowerCase() === 'true' || String(process.env.OFFLINE_LOGIN || '') === '1';
         const API_BASE = (process.env.API_URL || 'https://server-production-0a24.up.railway.app').replace(/\/$/, '');
         let versaoAtual = null;
         let versaoOk = false;
-        try {
-            const fetchFn = globalThis.fetch || require('node-fetch');
-            if (!fetchFn) throw new Error('fetch não disponível no main');
-            const res = await fetchFn(`${API_BASE}/versao`, { method: 'GET', headers: { 'Accept': 'application/json' } });
-            if (!res.ok) throw new Error(`HTTP ${res.status}`);
-            const json = await res.json();
-            versaoAtual = json.versao_atual || json.versao || null;
-            if (versaoAtual) {
-                const normalize = s => String(s || '').trim();
-                versaoOk = normalize(versaoAtual) === normalize(clientVersion);
-            } else {
-                console.warn('/versao retornou sem versao_atual:', json);
+
+        if (OFFLINE_LOGIN) {
+            versaoOk = true;
+            console.log('OFFLINE_LOGIN ativo: pulando verificação de versão.');
+        } else {
+            try {
+                const fetchFn = globalThis.fetch || require('node-fetch');
+                if (!fetchFn) throw new Error('fetch não disponível no main');
+                const res = await fetchFn(`${API_BASE}/versao`, { method: 'GET', headers: { 'Accept': 'application/json' } });
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                const json = await res.json();
+                versaoAtual = json.versao_atual || json.versao || null;
+                if (versaoAtual) {
+                    const normalize = s => String(s || '').trim();
+                    versaoOk = normalize(versaoAtual) === normalize(clientVersion);
+                } else {
+                    console.warn('/versao retornou sem versao_atual:', json);
+                    versaoOk = true; // política permissiva por padrão
+                }
+            } catch (err) {
+                console.error('Erro ao buscar /versao:', err);
                 versaoOk = true; // política permissiva por padrão
             }
-        } catch (err) {
-            console.error('Erro ao buscar /versao:', err);
-            versaoOk = true; // política permissiva por padrão
         }
 
         const fileToLoad = versaoOk ? 'launcher.html' : 'desatualizado.html';
@@ -785,7 +790,6 @@ function createMobileContext(i, proxyConfig, device, opts = {}) {
     const userDataDir = fs.mkdtempSync(path.join(os.tmpdir(), `user-data-dir-${i}-`));
 
     const launchOpts = {
-        executablePath: chromiumExecutablePath,
         userAgent: device.userAgent,
         locale: device.locale,
         screen: device.screen,
@@ -917,7 +921,6 @@ async function reiniciarAbas(params) {
             const context = await chromium.launchPersistentContext(
                 fs.mkdtempSync(path.join(os.tmpdir(), `user-data-dir-0-`)),
                 {
-                    executablePath: chromiumExecutablePath,
                     proxy: proxyConfig,
                     headless: false,
                     ignoreHTTPSErrors: true,
@@ -967,7 +970,6 @@ async function reiniciarAbas(params) {
                 const context = await chromium.launchPersistentContext(
                     fs.mkdtempSync(path.join(os.tmpdir(), `user-data-dir-${i}-`)),
                     {
-                        executablePath: chromiumExecutablePath,
                         proxy: proxyConfig,
                         headless: false,
                         ignoreHTTPSErrors: true,

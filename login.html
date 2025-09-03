@@ -773,9 +773,33 @@ closeRegister.addEventListener('click', () => {
         loginBtn.addEventListener('click', async () => {
             const usuario = userInput.value.trim();
             const senha = senhaInput.value.trim();
+
+            // Flag de modo offline vinda do preload
+            const OFFLINE = !!(window.nconfig && (window.nconfig.OFFLINE_LOGIN === true || String(window.nconfig.OFFLINE_LOGIN).toLowerCase() === 'true' || String(window.nconfig.OFFLINE_LOGIN) === '1'));
+
+            if (!usuario || !senha) { showError("Preencha usuário e senha corretamente."); return; }
+
+            if (OFFLINE) {
+                try {
+                    const fakeToken = `mock_${Date.now()}`;
+                    localStorage.setItem('token', fakeToken);
+                    localStorage.setItem('usuario', usuario);
+                    if (window.electronAPI?.enviarLoginSucesso) {
+                        window.electronAPI.enviarLoginSucesso({ usuario, token: fakeToken });
+                    } else {
+                        // Fallback: navega direto
+                        window.location.href = 'launcher.html';
+                    }
+                } catch (e) {
+                    console.error('Erro no login offline:', e);
+                    showError('Erro no login offline');
+                }
+                return;
+            }
+
             const ip = window.electronAPI?.getMac?.() || '';
 
-            if (!usuario || !senha || !ip) { showError("Preencha usuário e senha corretamente."); return; }
+            if (!ip) { showError("Não foi possível obter o identificador do dispositivo."); return; }
             const API_URL = window.config?.API_URL;
             if (!API_URL) { showError("❌ API_URL não recebida"); return; }
 

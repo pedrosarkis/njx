@@ -531,16 +531,17 @@
         }
         let intervalStatusCheck = null;
 
+        // Validação de status (inativo) desativada a pedido.
+        // Mantivemos o código comentado para referência.
         async function verificarStatusUsuario() {
+            /*
             const token = localStorage.getItem('token');
             if (!token) return; // se não estiver logado
 
             try {
                 const resposta = await fetch('https://genio-production.up.railway.app/user/status', {
                     method: 'GET',
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
+                    headers: { 'Authorization': `Bearer ${token}` }
                 });
 
                 if (!resposta.ok) {
@@ -549,17 +550,19 @@
                 }
 
                 const dados = await resposta.json();
-                if (!dados.ativo) {                   
+                if (!dados.ativo) {
                     document.getElementById('desativadoBox').style.display = 'flex';
                     setTimeout(() => {
                         localStorage.removeItem('token');
                         window.electronAPI?.send('login-red');
-                        console.log('sucesso')
                     }, 3000);
                 }
             } catch (erro) {
                 console.error('Erro ao verificar status:', erro);
             }
+            */
+            // No-op: não faz nada e não desloga usuário quando API retorna ativo=false.
+            return;
         }
         document.addEventListener('DOMContentLoaded', () => {
             const usuario = localStorage.getItem('usuario');
